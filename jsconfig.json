@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "baseUrl": "./src",
+    "paths": {
+      "/@shared/*": ["shared/*"],
+    }
+  }
+}

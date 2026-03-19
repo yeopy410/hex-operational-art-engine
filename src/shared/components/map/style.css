@@ -1,0 +1,18 @@
+.map-unit {
+
+}
+.map-unit-symbol {
+
+}
+.map-unit-symbol-img {
+  background-image: url(--unit-image-url);
+}
+.map-unit-data {
+
+}
+.map-unit-data-cp::after {
+  content: var(--unit-data-cp);
+}
+.map-unit-data-mp::after {
+  content: var(--unit-data-mp);
+}

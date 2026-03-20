@@ -1,4 +1,3 @@
-// @ts-check
 "use strict";
 const [X, Y] = [0, 1];
 

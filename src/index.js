@@ -1,4 +1,3 @@
-// @ts-check
 "use strict";
 import path from 'path';
 import { fileURLToPath } from 'url';

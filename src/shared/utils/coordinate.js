@@ -2,10 +2,20 @@
 "use strict";
 import * as Vector2 from './vector2.js';
 const [X, Y] = [0, 1];
-export let size = [0,0];
 
 
 
+/**
+ * @param {Number[]} reference
+ * @param {Number[]} gridSize
+ * @returns {(target: Number[]) => Number[]}
+ */
+export function createGetVectorByCoordinate(reference, gridSize) {
+  return target => [
+    reference[X] + gridSize[X]*( target[X]*2 + (target[Y] & 1) ),
+    reference[Y] + gridSize[Y]*target[Y]*3
+  ]
+}
 /**
  * @param {Number[]} vector
  * @param {Number[]} divisor
@@ -19,19 +29,11 @@ export function getCoordinateByVector(vector, divisor) {
 }
 
 /**
+ * 인덱스가 undefined라면 size를 벗어난 유효하지 않은 좌표라는 의미.
  * @param {Number[]} coordinate
+ * @param {Number[]} size
  */
-export function isValidCoordinate(coordinate) {
-  return (
-    0 <= coordinate[X] && coordinate[X] < size[X] &&
-    0 <= coordinate[Y] && coordinate[Y] < size[Y]
-  )
-}
-
-/**
- * @param {Number[]} coordinate
- */
-export function getIndexByCoordinate(coordinate) {
+export function getIndexByCoordinate(coordinate, size) {
   if (
     0 <= coordinate[X] && coordinate[X] < size[X] &&
     0 <= coordinate[Y] && coordinate[Y] < size[Y]
@@ -41,18 +43,20 @@ export function getIndexByCoordinate(coordinate) {
 }
 /**
  * @param {Number} index
+ * @param {Number[]} size
  */
-export function getCoordinateByIndex(index) {
+export function getCoordinateByIndex(index, size) {
   const coordinateX = index % size[Y];
   return [coordinateX, (index-coordinateX) / size[Y]];
 }
 /**
  * @param {Number[][]} coordinates
+ * @param {Number[]} size
  */
-export function getIndexsByCoordinates(coordinates) {
+export function getIndexsByCoordinates(coordinates, size) {
   const indexs = [];
   for (const coordinate of coordinates) {
-    const index = getIndexByCoordinate(coordinate);
+    const index = getIndexByCoordinate(coordinate, size);
     if (index !== undefined) indexs.push(index);
   }
   return indexs;
@@ -89,11 +93,12 @@ export function getCoordinatesByDistance(coordinate, distance) {
 
 /**
  * @param {Number} index
+ * @param {Number[]} size
  */
-export function getIndexsByAround(index) {
-  const indexs = [], coordinate = getCoordinateByIndex(index);
+export function getIndexsByAround(index, size) {
+  const indexs = [], coordinate = getCoordinateByIndex(index, size);
   for (const direction of directions) {
-    const target = getIndexByCoordinate(getCoordinateByRelativeCoordinate(coordinate, direction));
+    const target = getIndexByCoordinate(getCoordinateByRelativeCoordinate(coordinate, direction), size);
     if (target !== undefined) indexs.push(target);
   }
   return indexs;

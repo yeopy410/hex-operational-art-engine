@@ -1,4 +1,3 @@
-// @ts-check
 "use strict";
 import { Message, WebSocketProtocol } from '/@shared/types/communication.js';
 
@@ -72,11 +71,11 @@ function request() {
 }
 
 function connect() {
-  handler.get('open')();
+  performHandler('open');
 
   socket.onmessage = event => {
     const {type, data} = JSON.parse(event.data);
-    handler.get(type)(data);
+    performHandler(type, data);
   }
 
   socket.onerror = error => {
@@ -86,8 +85,21 @@ function connect() {
   /** @param {CloseEvent} event */
   socket.onclose = event => {
     console.log('연결종료', event.code);
-    handler.get('close')();
+    performHandler('close');
     if (!event.wasClean) reconnect();
   }
 
+}
+
+
+
+/**
+ * @param {String} key
+ * @param {any} [data]
+ */
+function performHandler(key, data) {
+  const targetHandler = handler.get(key);
+  if (targetHandler) {
+    targetHandler(data);
+  }
 }

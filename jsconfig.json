@@ -4,6 +4,9 @@
     "baseUrl": "./src",
     "paths": {
       "/@shared/*": ["shared/*"],
-    }
+    },
+    "checkJs": true,
+    "noImplicitReturns": false,
+    "strictNullChecks": true
   }
 }

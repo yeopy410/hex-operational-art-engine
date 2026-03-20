@@ -1,4 +1,3 @@
-// @ts-check
 "use strict";
 
 // const t = templateUnit.content.cloneNode(true);
@@ -90,7 +89,7 @@ function qsTag(root, tag) {
   return el;
 }
 
-qsTag(document, 'canvas').getContext
+// qsTag(document, 'canvas').getContext
 
 
 /**

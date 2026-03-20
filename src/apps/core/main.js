@@ -1,4 +1,3 @@
-// @ts-check
 "use strict";
 import express from 'express';
 import { WebSocketServer } from 'ws';

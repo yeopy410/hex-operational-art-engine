@@ -1,4 +1,3 @@
-// @ts-check
 "use strict";
 import * as Communication from './communication.js';
 

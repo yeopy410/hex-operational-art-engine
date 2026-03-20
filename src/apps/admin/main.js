@@ -1,4 +1,4 @@
-// @ts-check
+"use strict";
 import path from 'path';
 import { app, BrowserWindow, ipcMain } from 'electron';
 

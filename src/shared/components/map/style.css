@@ -1,19 +1,20 @@
 .map-viewport {
   overflow: hidden;
   position: relative;
-  --container-x: 0px;
-  --container-y: 0px;
+  --layer-x: 0px;
+  --layer-y: 0px;
   --scale: 1;
 }
 .map-viewport-svg {
+  pointer-events: none;
   width:  100%;
   height: 100%;
   position: absolute;
 }
 
-.map-container {
+.map-layer {
   transform-origin: 0 0;
-  transform: translate(var(--container-x), var(--container-y)) scale(var(--scale));
+  transform: translate(var(--layer-x), var(--layer-y)) scale(var(--scale));
   position: absolute;
 }
 
@@ -27,14 +28,17 @@
   --unit-y: 0px;
   transform: translate(var(--unit-x), var(--unit-y));
 }
+.map-unit * {
+  pointer-events: none;
+}
 /* .map-unit-symbol {
-
+  
 }
 .map-unit-symbol-img {
   background-image: url(--unit-image-url);
 }
 .map-unit-data {
-
+  
 }
 .map-unit-data-cp::after {
   content: var(--unit-data-cp);

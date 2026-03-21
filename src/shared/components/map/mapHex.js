@@ -1,19 +1,19 @@
 "use strict";
+import * as DOM from '../../utils/dom.js';
 import * as Coordinate from '../../utils/coordinate.js';
 import * as Setting from './setting.js';
 const [X, Y] = [0, 1];
-const SVGNS = "http://www.w3.org/2000/svg";
 
 
 
-export const hexPolygon = document.createElementNS(SVGNS, 'polygon');
-export const hexGroup = document.createElementNS(SVGNS, 'g');
+export const hexPolygon = DOM.buildSVG('polygon').setId('hex-polygon').get();
+export const hexLayer = DOM.buildSVG('g').get();
 let hexUIArray = [];
 
 
 
 void (function main() {
-  hexPolygon.setAttribute('id', 'hex-polygon');
+  
 })();
 
 
@@ -38,7 +38,7 @@ export function update(updateDataMapHex) {
 
 function clearHexMap() {
   hexUIArray = [];
-  hexGroup.innerHTML = '';
+  hexLayer.innerHTML = '';
 }
 
 
@@ -64,7 +64,7 @@ function setHexMap(mapSize, initDataMapHex) {
     }
   }
 
-  hexGroup.append(fragment);
+  hexLayer.append(fragment);
 }
 
 
@@ -90,8 +90,7 @@ class HexUI {
   constructor(index, coordinate) {
     this.index = index;
     this.coordinate = coordinate;
-    this.svg = document.createElementNS(SVGNS, 'use');
-    this.svg.setAttribute('href', '#hex-polygon');
+    this.svg = DOM.buildSVG('use').setHref('#hex-polygon').get();
   }
 
 

@@ -1,4 +1,5 @@
 "use strict";
+import * as DOM from '../../utils/dom.js';
 import { template, div } from '../../utils/dom.js';
 import * as Coordinate from '../../utils/coordinate.js';
 import * as Vector2 from '../../utils/vector2.js';
@@ -6,6 +7,16 @@ import * as Setting from './setting.js';
 const [X, Y] = [0, 1];
 
 
+
+export function test() {
+  unitLayer.style.setProperty('--unit-size-x', `${Setting.UNIT_SIZE[X]}px`);
+  unitLayer.style.setProperty('--unit-size-y', `${Setting.UNIT_SIZE[Y]}px`);
+  const reference = Vector2.add([Setting.GRID_SIZE[X], Setting.GRID_SIZE[Y]*2], Vector2.scalarMul(Setting.UNIT_SIZE, -0.5));
+  const getVectorByCoordinate = Coordinate.createGetVectorByCoordinate(reference, Setting.GRID_SIZE);
+  const test = new UnitUI().setVector(getVectorByCoordinate([1, 1]));
+  test.style.setProperty('--background-color', 'blue');
+  unitLayer.append(test);
+}
 
 const unitTemplate = template(
   div('map-unit-symbol',
@@ -16,7 +27,7 @@ const unitTemplate = template(
     div('map-unit-data-mp')
   )
 );
-export const unitContainer = document.createElement('div');
+export const unitLayer = DOM.buildHTML('div').setClassList('map-layer').get();
 let mapSize = [0, 0];
 
 
@@ -55,16 +66,6 @@ export function init(mapSizeData, initDataMapUnit) {
 
 export function update(updateDataMapUnit) {
 
-}
-
-export function test() {
-  unitContainer.style.setProperty('--unit-size-x', `${Setting.UNIT_SIZE[X]}px`);
-  unitContainer.style.setProperty('--unit-size-y', `${Setting.UNIT_SIZE[Y]}px`);
-  const reference = Vector2.add([Setting.GRID_SIZE[X], Setting.GRID_SIZE[Y]*2], Vector2.scalarMul(Setting.UNIT_SIZE, -0.5));
-  const getVectorByCoordinate = Coordinate.createGetVectorByCoordinate(reference, Setting.GRID_SIZE);
-  const test = new UnitUI().setVector(getVectorByCoordinate([1, 1]));
-  test.style.setProperty('--background-color', 'blue');
-  unitContainer.append(test);
 }
 
 

@@ -1,4 +1,5 @@
 "use strict";
+import * as DOM from '../../utils/dom.js';
 import * as Coordinate from '../../utils/coordinate.js';
 import * as Vector2 from '../../utils/vector2.js';
 import * as Setting from './setting.js';
@@ -11,7 +12,7 @@ const BUTTON = {
 
 
 
-export const body = document.createElement('div');
+export const body = DOM.buildHTML('div').setClassList('map-viewport').get();
 
 export let vector = [0,0];
 export let scale = 1;
@@ -32,10 +33,10 @@ void (function main() {
 
 
 
-function performFrame() {
+function performFrame() { // 함수명을 update로 바꾸고, requestAnimationFrame을 외부고 빼는거 검토.
   if (isUpdated) {
-    body.style.setProperty('--container-x', `${vector[X]}px`);
-    body.style.setProperty('--container-y', `${vector[Y]}px`);
+    body.style.setProperty('--layer-x', `${vector[X]}px`);
+    body.style.setProperty('--layer-y', `${vector[Y]}px`);
     body.style.setProperty('--scale', scale.toString());
   }
   requestAnimationFrame(performFrame);
@@ -73,7 +74,7 @@ function HandlingWheel() {
 
 function HandlingMouse() {
   body.addEventListener('mousedown', mousedown);
-  // body.addEventListener('mousemove', mousemove);
+  // body.addEventListener('mousemove', mousemove); // [타일 마우스오버, 타일 클릭] 헨들링은 if (e.target is 타일) 방식 말고 기존의 마우스벡터 방식 그대로 유지하기?
 
 
   /** @param {MouseEvent} e */

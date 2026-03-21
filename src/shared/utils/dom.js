@@ -1,4 +1,5 @@
 "use strict";
+const SVGNS = "http://www.w3.org/2000/svg";
 
 // const t = templateUnit.content.cloneNode(true);
 // const a = document.createElement('div');
@@ -24,6 +25,61 @@ export function div(cssClass, ...args) {
   element.append(...args);
   return element;
 }
+
+
+
+/**
+ * @template {keyof HTMLElementTagNameMap} K
+ * @param {K} tagName
+ * @returns {constructor<HTMLElementTagNameMap[K]>}
+ */
+export function buildHTML(tagName) {
+  return constructor(document.createElement(tagName));
+}
+
+/**
+ * @template {keyof SVGElementTagNameMap} K
+ * @param {K} tagName
+ * @returns {constructor<SVGElementTagNameMap[K]>}
+ */
+export function buildSVG(tagName) {
+  return constructor(document.createElementNS(SVGNS, tagName));
+}
+
+
+/**
+ * @template {Element} T
+ * @typedef {Object} constructor
+ * @property {(...classArgs: string[]) => constructor<T>} setClassList
+ * @property {(id: string) => constructor<T>} setId
+ * @property {(href: string) => constructor<T>} setHref
+ * @property {() => T} get
+ */
+
+/**
+ * @template {Element} T
+ * @param {T} element
+ * @returns {constructor<T>}
+ */
+function constructor(element) {
+  return {
+    setClassList: (...classArgs) => {
+      element.classList.add(...classArgs);
+      return constructor(element);
+    },
+    setId: id => {
+      element.setAttribute('id', id);
+      return constructor(element);
+    },
+    setHref: href => {
+      element.setAttribute('href', href);
+      return constructor(element);
+    },
+    get: () => element
+  }
+}
+
+
 
 // /**
 //  * @template {keyof HTMLElementTagNameMap} K

@@ -1,22 +1,33 @@
 .map-viewport {
   overflow: hidden;
+  position: relative;
   --container-x: 0px;
   --container-y: 0px;
   --scale: 1;
+}
+.map-viewport-svg {
+  width:  100%;
+  height: 100%;
+  position: absolute;
 }
 
 .map-container {
   transform-origin: 0 0;
   transform: translate(var(--container-x), var(--container-y)) scale(var(--scale));
+  position: absolute;
 }
 
 
-/* .map-unit {
+.map-unit {
+  display: block;
+  width:  var(--unit-size-x);
+  height: var(--unit-size-y);
+  background-color: var(--background-color);
   --unit-x: 0px;
   --unit-y: 0px;
   transform: translate(var(--unit-x), var(--unit-y));
 }
-.map-unit-symbol {
+/* .map-unit-symbol {
 
 }
 .map-unit-symbol-img {

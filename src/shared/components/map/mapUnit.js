@@ -2,6 +2,8 @@
 import { template, div } from '../../utils/dom.js';
 import * as Coordinate from '../../utils/coordinate.js';
 import * as Vector2 from '../../utils/vector2.js';
+import * as Setting from './setting.js';
+const [X, Y] = [0, 1];
 
 
 
@@ -17,8 +19,6 @@ const unitTemplate = template(
 export const unitContainer = document.createElement('div');
 let mapSize = [0, 0];
 
-// const reference = Vector2.add([Setting.GRID_SIZE[X], Setting.GRID_SIZE[Y]*2], Vector2.scalarMul(Setting.UNIT_SIZE, -0.5));
-
 
 
 void (function main() {
@@ -29,7 +29,7 @@ void (function main() {
   /** @param {MouseEvent} e */
   function click(e) {
     if (e.target instanceof UnitUI) {
-      
+      console.log(1);
     }
   }
 
@@ -57,8 +57,15 @@ export function update(updateDataMapUnit) {
 
 }
 
-// const reference = Vector2.scalarMul(unitSize, -0.5);
-// const getVectorByCoordinate = Coordinate.createGetVectorByCoordinate(reference, gridSize);
+export function test() {
+  unitContainer.style.setProperty('--unit-size-x', `${Setting.UNIT_SIZE[X]}px`);
+  unitContainer.style.setProperty('--unit-size-y', `${Setting.UNIT_SIZE[Y]}px`);
+  const reference = Vector2.add([Setting.GRID_SIZE[X], Setting.GRID_SIZE[Y]*2], Vector2.scalarMul(Setting.UNIT_SIZE, -0.5));
+  const getVectorByCoordinate = Coordinate.createGetVectorByCoordinate(reference, Setting.GRID_SIZE);
+  const test = new UnitUI().setVector(getVectorByCoordinate([1, 1]));
+  test.style.setProperty('--background-color', 'blue');
+  unitContainer.append(test);
+}
 
 
 
@@ -67,6 +74,13 @@ export class UnitUI extends HTMLElement {
     super();
     this.classList.add('map-unit');
     this.append(unitTemplate.content.cloneNode(true));
+  }
+
+  /** @param {Number[]} vector */
+  setVector(vector) {
+    this.style.setProperty('--unit-x', `${vector[X]}px`);
+    this.style.setProperty('--unit-y', `${vector[Y]}px`);
+    return this;
   }
 
 }

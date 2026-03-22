@@ -1,6 +1,5 @@
 "use strict";
 import * as DOM from '../../utils/dom.js';
-import { template, div } from '../../utils/dom.js';
 import * as Coordinate from '../../utils/coordinate.js';
 import * as Vector2 from '../../utils/vector2.js';
 import * as Setting from './setting.js';
@@ -9,44 +8,50 @@ const [X, Y] = [0, 1];
 
 
 export function test() {
-  unitLayer.style.setProperty('--unit-size-x', `${Setting.UNIT_SIZE[X]}px`);
-  unitLayer.style.setProperty('--unit-size-y', `${Setting.UNIT_SIZE[Y]}px`);
-  const reference = Vector2.add([Setting.GRID_SIZE[X], Setting.GRID_SIZE[Y]*2], Vector2.scalarMul(Setting.UNIT_SIZE, -0.5));
+  const reference = Vector2.sum([
+    [Setting.GRID_SIZE[X], Setting.GRID_SIZE[Y]*2],
+    Vector2.scalarMul(Setting.UNIT_SIZE, -0.5),
+    [-Setting.UNIT_BORDER, -Setting.UNIT_BORDER]
+  ])
   const getVectorByCoordinate = Coordinate.createGetVectorByCoordinate(reference, Setting.GRID_SIZE);
+
   const test = new UnitUI().setVector(getVectorByCoordinate([1, 1]));
   test.style.setProperty('--background-color', 'blue');
-  unitLayer.append(test);
+  test.style.setProperty('--unit-data-cp', `'15'`);
+  test.style.setProperty('--unit-data-mp', `'17'`);
+
+  const test2 = new UnitUI().setVector(getVectorByCoordinate([3, 2]));
+  test2.style.setProperty('--background-color', 'red');
+
+  layer.append(test, test2);
 }
 
-const unitTemplate = template(
-  div('map-unit-symbol',
-    div('map-unit-symbol-img')
-  ),
-  div('map-unit-data',
-    div('map-unit-data-cp'),
-    div('map-unit-data-mp')
-  )
-);
-export const unitLayer = DOM.buildHTML('div').setClassList('map-layer').get();
+export const layer = DOM.buildHTML('div')
+  .setClassList('map-layer')
+  .setProperty('--unit-size-x', `${Setting.UNIT_SIZE[X]}px`)
+  .setProperty('--unit-size-y', `${Setting.UNIT_SIZE[Y]}px`)
+  .setProperty('--unit-border-width', `${Setting.UNIT_BORDER}px`)
+  .setProperty('--unit-border-color', 'black')
+  .get();
 let mapSize = [0, 0];
 
 
 
-void (function main() {
+void (function main() { // 이것들 전부 main으로 재배치하기?
   addEventListener('click', click);
   addEventListener('mouseover', mouseover);
 
 
   /** @param {MouseEvent} e */
   function click(e) {
-    if (e.target instanceof UnitUI) {
-      console.log(1);
+    if (isUnitUI(e.target)) {
+      console.log(e.target.name);
     }
   }
 
   /** @param {MouseEvent} e */
   function mouseover(e) {
-    if (e.target instanceof UnitUI) {
+    if (isUnitUI(e.target)) {
       
     }
   }
@@ -70,12 +75,30 @@ export function update(updateDataMapUnit) {
 
 
 
-export class UnitUI extends HTMLElement {
+/**
+ * @param {EventTarget | null} target
+ * @returns {target is UnitUI}
+ */
+export function isUnitUI(target) {
+  return target instanceof UnitUI;
+}
+
+
+
+class UnitUI extends HTMLElement {
+  static _template = DOM.template(
+    DOM.div('map-unit-symbol-img'),
+    DOM.div('map-unit-data-cp'),
+    DOM.div('map-unit-data-mp')
+  );
+
+
   constructor() {
     super();
-    this.classList.add('map-unit');
-    this.append(unitTemplate.content.cloneNode(true));
+    this.append(UnitUI._template.content.cloneNode(true));
+    this.name = 412414
   }
+
 
   /** @param {Number[]} vector */
   setVector(vector) {

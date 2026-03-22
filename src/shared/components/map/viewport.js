@@ -38,6 +38,7 @@ function performFrame() { // 함수명을 update로 바꾸고, requestAnimationF
     body.style.setProperty('--layer-x', `${vector[X]}px`);
     body.style.setProperty('--layer-y', `${vector[Y]}px`);
     body.style.setProperty('--scale', scale.toString());
+    isUpdated = false;
   }
   requestAnimationFrame(performFrame);
 }

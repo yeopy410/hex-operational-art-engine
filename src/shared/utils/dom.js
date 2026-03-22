@@ -48,33 +48,36 @@ export function buildSVG(tagName) {
 
 
 /**
- * @template {Element} T
+ * @template {HTMLElement | SVGElement} T
  * @typedef {Object} constructor
- * @property {(...classArgs: string[]) => constructor<T>} setClassList
- * @property {(id: string) => constructor<T>} setId
- * @property {(href: string) => constructor<T>} setHref
+ * @property {(...tokens: string[]) => constructor<T>} setClassList
+ * @property {(qualifiedName: string, value: string) => constructor<T>} setAttribute
+ * @property {(property: string, value: string | null, priority?: string | undefined) => constructor<T>} setProperty
  * @property {() => T} get
  */
 
 /**
- * @template {Element} T
+ * @template {HTMLElement | SVGElement} T
  * @param {T} element
  * @returns {constructor<T>}
  */
 function constructor(element) {
   return {
-    setClassList: (...classArgs) => {
-      element.classList.add(...classArgs);
+    setClassList: (...tokens) => {
+      element.classList.add(...tokens);
       return constructor(element);
     },
-    setId: id => {
-      element.setAttribute('id', id);
+
+    setAttribute: (qualifiedName, value) => {
+      element.setAttribute(qualifiedName, value);
       return constructor(element);
     },
-    setHref: href => {
-      element.setAttribute('href', href);
+
+    setProperty: (property, valu, priority) => {
+      element.style.setProperty(property, valu, priority);
       return constructor(element);
     },
+
     get: () => element
   }
 }

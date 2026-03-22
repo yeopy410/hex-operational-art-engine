@@ -6,14 +6,17 @@ const [X, Y] = [0, 1];
 
 
 
-export const hexPolygon = DOM.buildSVG('polygon').setId('hex-polygon').get();
-export const hexLayer = DOM.buildSVG('g').get();
+export const hexPolygon = DOM.buildSVG('polygon')
+  .setAttribute('id', 'hex-polygon')
+  .setAttribute('points', getPoints())
+  .get();
+export const layer = DOM.buildSVG('g').get();
 let hexUIArray = [];
 
 
 
 void (function main() {
-  
+
 })();
 
 
@@ -22,7 +25,6 @@ void (function main() {
  * @param {import('../../types/communication.js').InitDataMap} initDataMap
  */
 export function init(initDataMap) {
-  hexPolygon.setAttribute('points', HexUI.getPointsByGridSize(Setting.GRID_SIZE)); // 여기에 추가로 타일간 유격도 고려할것? paddedGridSize?
   clearHexMap();
 
   setHexMap(initDataMap.size, initDataMap.initDataMapHex);
@@ -38,7 +40,7 @@ export function update(updateDataMapHex) {
 
 function clearHexMap() {
   hexUIArray = [];
-  hexLayer.innerHTML = '';
+  layer.innerHTML = '';
 }
 
 
@@ -48,7 +50,7 @@ function clearHexMap() {
  * @param {import('../../types/communication.js').InitDataMapHex} initDataMapHex
  */
 function setHexMap(mapSize, initDataMapHex) {
-  const reference = [0, 0]; // 여기에 추가로 타일간 유격도 고려할것? padding?
+  const reference = [0, 0];
   const getVectorByCoordinate = Coordinate.createGetVectorByCoordinate(reference, Setting.GRID_SIZE);
 
   const fragment = document.createDocumentFragment();
@@ -64,25 +66,33 @@ function setHexMap(mapSize, initDataMapHex) {
     }
   }
 
-  hexLayer.append(fragment);
+  layer.append(fragment);
+}
+
+
+
+function getPoints() {
+  const p = Setting.HEX_BORDER;
+  const [x, y] = Setting.GRID_SIZE;
+  const sin30 = 1/2;
+  const cos30 = Math.sqrt(3)/2;
+
+  const [xl, xc, xr] = [p*cos30, x, x*2-p*cos30];
+  const [yt, ymt, ymb, yb] = [p, y+p*sin30, y*3-p*sin30, y*4-p];
+
+  return [
+    [xc, yt ],
+    [xr, ymt],
+    [xr, ymb],
+    [xc, yb ],
+    [xl, ymb],
+    [xl, ymt]
+  ].map(point => `${point[X]},${point[Y]}`).join(' ');
 }
 
 
 
 class HexUI {
-  /** @param {Number[]} gridSize */
-  static getPointsByGridSize([x, y]) {
-    return [
-      [0  , y  ],
-      [x  , 0  ],
-      [x*2, y  ],
-      [x*2, y*3],
-      [x  , y*4],
-      [0  , y*3]
-    ].map(point => `${point[X]},${point[Y]}`).join(' ');
-  }
-
-
   /**
    * @param {Number} index
    * @param {Number[]} coordinate
@@ -90,7 +100,7 @@ class HexUI {
   constructor(index, coordinate) {
     this.index = index;
     this.coordinate = coordinate;
-    this.svg = DOM.buildSVG('use').setHref('#hex-polygon').get();
+    this.svg = DOM.buildSVG('use').setAttribute('href', '#hex-polygon').get();
   }
 
 

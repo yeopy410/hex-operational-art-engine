@@ -15,12 +15,12 @@ export function test() {
   ])
   const getVectorByCoordinate = Coordinate.createGetVectorByCoordinate(reference, Setting.GRID_SIZE);
 
-  const test = new UnitUI().setVector(getVectorByCoordinate([1, 1]));
+  const test = new UnitStackUI().setVector(getVectorByCoordinate([1, 1]));
   test.style.setProperty('--background-color', 'blue');
   test.style.setProperty('--unit-data-cp', `'15'`);
   test.style.setProperty('--unit-data-mp', `'17'`);
 
-  const test2 = new UnitUI().setVector(getVectorByCoordinate([3, 2]));
+  const test2 = new UnitStackUI().setVector(getVectorByCoordinate([3, 2]));
   test2.style.setProperty('--background-color', 'red');
 
   layer.append(test, test2);
@@ -44,14 +44,14 @@ void (function main() { // 이것들 전부 main으로 재배치하기?
 
   /** @param {MouseEvent} e */
   function click(e) {
-    if (isUnitUI(e.target)) {
+    if (isUnitStackUI(e.target)) {
       console.log(e.target.name);
     }
   }
 
   /** @param {MouseEvent} e */
   function mouseover(e) {
-    if (isUnitUI(e.target)) {
+    if (isUnitStackUI(e.target)) {
       
     }
   }
@@ -77,15 +77,15 @@ export function update(updateDataMapUnit) {
 
 /**
  * @param {EventTarget | null} target
- * @returns {target is UnitUI}
+ * @returns {target is UnitStackUI}
  */
-export function isUnitUI(target) {
-  return target instanceof UnitUI;
+export function isUnitStackUI(target) {
+  return target instanceof UnitStackUI;
 }
 
 
 
-class UnitUI extends HTMLElement {
+class UnitStackUI extends HTMLElement {
   static _template = DOM.template(
     DOM.div('map-unit-symbol-img'),
     DOM.div('map-unit-data-cp'),
@@ -95,7 +95,7 @@ class UnitUI extends HTMLElement {
 
   constructor() {
     super();
-    this.append(UnitUI._template.content.cloneNode(true));
+    this.append(UnitStackUI._template.content.cloneNode(true));
     this.name = 412414
   }
 
@@ -108,4 +108,4 @@ class UnitUI extends HTMLElement {
   }
 
 }
-customElements.define('map-unit', UnitUI);
+customElements.define('map-unit', UnitStackUI);

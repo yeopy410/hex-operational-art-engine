@@ -38,7 +38,7 @@ map-unit * {
   left: 12.5%;
   top: 20%;
   /* --unit-image-url: url('./default.jpg'); */
-  background-image: var(--unit-image-url, url('./map-default-unit.jpg'));
+  background-image: var(--unit-image-url, url('./default-unit.jpg'));
   position: absolute;
 }
 .map-unit-data-cp::after {

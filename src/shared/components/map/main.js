@@ -1,8 +1,8 @@
 "use strict";
 import * as DOM from '../../utils/dom.js';
-import * as Viewport from './viewport.js';
-import * as Hex from './mapHex.js';
-import * as Unit from './mapUnit.js';
+import * as Viewport from './_viewport.js';
+import * as Hex from './_hex.js';
+import * as UnitStack from './_unit-stack.js';
 
 
 
@@ -22,9 +22,9 @@ void (function main() {
   svgDefs.append(Hex.hexPolygon);
   svgLayers.append(Hex.layer, decorationLayer, interactionLayer);
   svg.append(svgDefs, svgLayers);
-  viewport.append(svg, Unit.layer);
+  viewport.append(svg, UnitStack.layer);
 
-  Unit.test();
+  UnitStack.test();
 })();
 
 

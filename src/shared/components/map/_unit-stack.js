@@ -15,16 +15,18 @@ export function test() {
   ])
   const getVectorByCoordinate = Coordinate.createGetVectorByCoordinate(reference, Setting.GRID_SIZE);
 
-  const test = new UnitStackUI().setVector(getVectorByCoordinate([1, 1]));
+  const test = new UnitStackUI(1).setVector(getVectorByCoordinate([1, 1]));
   test.style.setProperty('--background-color', 'blue');
-  test.style.setProperty('--unit-data-cp', `'15'`);
-  test.style.setProperty('--unit-data-mp', `'17'`);
+  test.style.setProperty('--unit-data-count', `'15'`);
+  test.style.setProperty('--unit-data-force', `'17'`);
 
-  const test2 = new UnitStackUI().setVector(getVectorByCoordinate([3, 2]));
+  const test2 = new UnitStackUI(2).setVector(getVectorByCoordinate([3, 2]));
   test2.style.setProperty('--background-color', 'red');
 
   layer.append(test, test2);
 }
+
+
 
 export const layer = DOM.buildHTML('div')
   .setClassList('map-layer')
@@ -37,26 +39,17 @@ let mapSize = [0, 0];
 
 
 
-void (function main() { // 이것들 전부 main으로 재배치하기?
-  addEventListener('click', click);
-  addEventListener('mouseover', mouseover);
-
-
-  /** @param {MouseEvent} e */
-  function click(e) {
-    if (isUnitStackUI(e.target)) {
-      console.log(e.target.name);
+/**
+ * @param {String} type
+ * @param {(target: UnitStackUI) => void} handler
+ */
+export function addEventListenerUnitStackUI(type, handler) {
+  addEventListener(type, e => {
+    if (e.target instanceof UnitStackUI) {
+      handler(e.target);
     }
-  }
-
-  /** @param {MouseEvent} e */
-  function mouseover(e) {
-    if (isUnitStackUI(e.target)) {
-      
-    }
-  }
-
-})();
+  });
+}
 
 
 
@@ -69,34 +62,25 @@ export function init(mapSizeData, initDataMapUnit) {
 
 
 
-export function update(updateDataMapUnit) {
+export function updateUnitStack(updateDataMapUnit) {
 
-}
-
-
-
-/**
- * @param {EventTarget | null} target
- * @returns {target is UnitStackUI}
- */
-export function isUnitStackUI(target) {
-  return target instanceof UnitStackUI;
 }
 
 
 
 class UnitStackUI extends HTMLElement {
   static _template = DOM.template(
-    DOM.div('map-unit-symbol-img'),
-    DOM.div('map-unit-data-cp'),
-    DOM.div('map-unit-data-mp')
+    DOM.div('map-unit-stack-symbol-img'),
+    DOM.div('map-unit-stack-data-count'),
+    DOM.div('map-unit-stack-data-force')
   );
 
 
-  constructor() {
+  /** @param {Number} key  */
+  constructor(key) {
     super();
     this.append(UnitStackUI._template.content.cloneNode(true));
-    this.name = 412414
+    this.key = key
   }
 
 
@@ -108,4 +92,4 @@ class UnitStackUI extends HTMLElement {
   }
 
 }
-customElements.define('map-unit', UnitStackUI);
+customElements.define('map-unit-stack', UnitStackUI);

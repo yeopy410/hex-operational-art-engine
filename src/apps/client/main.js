@@ -21,7 +21,7 @@ import { InitDataMap, InitDataMapHex, InitDataMapUnit } from '/@shared/types/com
   // Map.viewport.style.transform = 'translate(100px, 50px)';
   // Map.viewport.style.marginLeft = '150px';
 
-  addEventListener('click', e => console.log(e.target))
+  // addEventListener('click', e => console.log(e.target))
 
   document.body.append(Map.viewport);
 

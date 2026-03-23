@@ -1,7 +1,7 @@
 .map-viewport {
   overflow: hidden;
   position: relative;
-  font-size: 1.4rem;
+  font-size: 25px;
   font-weight: 700;
 }
 .map-viewport-svg {
@@ -19,7 +19,7 @@
 }
 
 
-map-unit {
+map-unit-stack {
   overflow: hidden;
   border-radius: 15px;
   border: var(--unit-border-width) solid var(--unit-border-color);
@@ -29,27 +29,27 @@ map-unit {
   transform: translate(var(--unit-x), var(--unit-y));
   position: absolute;
 }
-map-unit * {
+map-unit-stack * {
   pointer-events: none;
 }
-.map-unit-symbol-img {
+.map-unit-stack-symbol-img {
   width: 75px;
   height: 50px;
   left: 12.5%;
-  top: 20%;
+  top: 18%;
   /* --unit-image-url: url('./default.jpg'); */
   background-image: var(--unit-image-url, url('./default-unit.jpg'));
   position: absolute;
 }
-.map-unit-data-cp::after {
+.map-unit-stack-data-count::after {
   bottom: 0;
   left: 7px;
-  content: var(--unit-data-cp);
+  content: var(--unit-data-count);
   position: absolute;
 }
-.map-unit-data-mp::after {
+.map-unit-stack-data-force::after {
   bottom: 0;
   right: 7px;
-  content: var(--unit-data-mp);
+  content: var(--unit-data-force);
   position: absolute;
 }

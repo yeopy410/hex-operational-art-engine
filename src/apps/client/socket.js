@@ -19,7 +19,7 @@ let socket;
  * open  : 소켓 연결 트리거,
  * close : 소켓 연결해제 트리거
  */
-export const handler = new Map();
+export const handlerMap = new Map();
 
 
 
@@ -98,7 +98,7 @@ function connect() {
  * @param {any} [data]
  */
 function performHandler(key, data) {
-  const targetHandler = handler.get(key);
+  const targetHandler = handlerMap.get(key);
   if (targetHandler) {
     targetHandler(data);
   }

@@ -14,46 +14,35 @@ const BUTTON = {
 
 export const body = DOM.buildHTML('div').setClassList('map-viewport').get();
 
-export let vector = [0,0];
-export let scale = 1;
+let vector = [0,0];
+let scale = 1;
 
 let isUpdated = true;
 
-// export let mouseCoordinate = [0, 0];
-// /** @type {Number | undefined} */
-// export let mouseIndex;
+/** @param {Number[]} coordinate */
+let updateMouseCoordinateHandler = coordinate => {}
 
 
 
 void (function main() {
   HandlingWheel();
   HandlingMouse();
-  performFrame();
 })();
 
 
 
-function performFrame() { // 함수명을 update로 바꾸고, requestAnimationFrame을 외부고 빼는거 검토.
+export function performTransform() {
   if (isUpdated) {
     body.style.setProperty('--layer-x', `${vector[X]}px`);
     body.style.setProperty('--layer-y', `${vector[Y]}px`);
     body.style.setProperty('--scale', scale.toString());
     isUpdated = false;
   }
-  requestAnimationFrame(performFrame);
 }
 
-/**
- * @param {Number[]} referenceVector
- * @param {Number[]} mouseVector
- * @param {Number} scaleRatio
- */
-function setVector(referenceVector, mouseVector, scaleRatio) {
-  vector = Vector2.add(
-    Vector2.scalarMul(referenceVector, scaleRatio),
-    Vector2.scalarMul(mouseVector, 1-scaleRatio)
-  );
-  isUpdated = true;
+/** @param {(coordinate: number[]) => void} handler */
+export function setUpdateMouseCoordinateHandler(handler) {
+  updateMouseCoordinateHandler = handler;
 }
 
 
@@ -75,7 +64,7 @@ function HandlingWheel() {
 
 function HandlingMouse() {
   body.addEventListener('mousedown', mousedown);
-  // body.addEventListener('mousemove', mousemove); // [타일 마우스오버, 타일 클릭] 헨들링은 if (e.target is 타일) 방식 말고 기존의 마우스벡터 방식 그대로 유지하기?
+  body.addEventListener('mousemove', mousemove);
 
 
   /** @param {MouseEvent} e */
@@ -85,11 +74,15 @@ function HandlingMouse() {
     }
   }
 
-  // /** @param {MouseEvent} e */
-  // function mousemove(e) {
-  //   mouseCoordinate = Coordinate.getCoordinateByVector(Vector2.difference(vector, getMapMouseVector([e.clientX, e.clientY])), gridSize);
-  //   mouseIndex = Coordinate.getIndexByCoordinate(mouseCoordinate);
-  // }
+  /** @param {MouseEvent} e */
+  function mousemove(e) {
+    updateMouseCoordinateHandler(
+      Coordinate.getCoordinateByVector(
+        Vector2.scalarMul(Vector2.difference(vector, getMapMouseVector([e.clientX, e.clientY])), 1/scale),
+        Setting.GRID_SIZE
+      )
+    );
+  }
 
   /**
    * @param {number[]} referenceVector
@@ -109,7 +102,7 @@ function HandlingMouse() {
    * @param {(e: MouseEvent) => void} moveHandler
    * @param {(e: MouseEvent) => void} upHandler
    */
-  function moveUp(button, moveHandler, upHandler=e=>{}) {
+  function moveUp(button, moveHandler, upHandler=e=>{}) { // 이거 다른 곳에서 재사용할 생각없다면 MouseWheelMove와 함께 mousedown에 통합 고려.
     /** @param {MouseEvent} e */
     const mouseup = e => {
       if (e.button !== button) return;
@@ -123,6 +116,21 @@ function HandlingMouse() {
     addEventListener('mouseup', mouseup)
   }
 
+}
+
+
+
+/**
+ * @param {Number[]} referenceVector
+ * @param {Number[]} mouseVector
+ * @param {Number} scaleRatio
+ */
+function setVector(referenceVector, mouseVector, scaleRatio) {
+  vector = Vector2.add(
+    Vector2.scalarMul(referenceVector, scaleRatio),
+    Vector2.scalarMul(mouseVector, 1-scaleRatio)
+  );
+  isUpdated = true;
 }
 
 

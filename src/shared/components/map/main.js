@@ -39,7 +39,7 @@ void (function main() {
 
   /** @param {number[]} coordinate */
   function updateMouseCoordinateHandler(coordinate) {
-    const index = Coordinate.getIndexByCoordinate(coordinate, mapSize);
+    const index = Coordinate.calcIndexFromCoordinate(coordinate, mapSize);
 
     // if (index !== undefined && index !== mouseIndex) {
     //   console.log(coordinate);

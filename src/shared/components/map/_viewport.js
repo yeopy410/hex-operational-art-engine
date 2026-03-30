@@ -53,9 +53,10 @@ function HandlingWheel() {
 
   /** @param {WheelEvent} e */
   function wheel(e) {
-    const referenceScale = scale;
-    scale = limitedToRange(scale-e.deltaY*Setting.SCALE_DELTA_MUL, Setting.SCALE_MIN, Setting.SCALE_MAX);
-    setVector(vector, getMapMouseVector([e.clientX,e.clientY]), scale/referenceScale);
+    setScale(
+      calcViewportOffsetVector([e.clientX,e.clientY]),
+      limitedToRange(scale-e.deltaY*Setting.SCALE_DELTA_MUL, Setting.SCALE_MIN, Setting.SCALE_MAX)
+    );
   }
 
 }
@@ -70,15 +71,15 @@ function HandlingMouse() {
   /** @param {MouseEvent} e */
   function mousedown(e) {
     if (e.button === BUTTON.WHEEL) {
-      moveUp(BUTTON.WHEEL, MouseWheelMove(Vector2.difference(vector, getMapMouseVector([e.clientX, e.clientY])), scale));
+      moveUp(BUTTON.WHEEL, MouseWheelMove(Vector2.delta(vector, calcViewportOffsetVector([e.clientX, e.clientY])), scale));
     }
   }
 
   /** @param {MouseEvent} e */
-  function mousemove(e) {
+  function mousemove(e) { // 이걸 여기서 main으로 보내고, 대신 이 모듈에 export function calcCoordinateFromClientVector(clientVector) 추가하기?
     updateMouseCoordinateHandler(
-      Coordinate.getCoordinateByVector(
-        Vector2.scalarMul(Vector2.difference(vector, getMapMouseVector([e.clientX, e.clientY])), 1/scale),
+      Coordinate.calcCoordinateFromVector(
+        Vector2.scalarMul(Vector2.delta(vector, calcViewportOffsetVector([e.clientX, e.clientY])), 1/scale),
         Setting.GRID_SIZE
       )
     );
@@ -90,11 +91,14 @@ function HandlingMouse() {
    * @returns {(e: MouseEvent) => void}
    */
   function MouseWheelMove(referenceVector, referenceScale) {
-    return e => setVector(
-      Vector2.difference(referenceVector, getMapMouseVector([e.clientX, e.clientY])),
-      getMapMouseVector([e.clientX, e.clientY]),
-      scale / referenceScale
-    );
+    return e => {
+      const viewportOffsetVector = calcViewportOffsetVector([e.clientX, e.clientY]);
+      setVector(
+        viewportOffsetVector,
+        Vector2.delta(referenceVector, viewportOffsetVector),
+        referenceScale
+      );
+    }
   }
 
   /**
@@ -113,7 +117,7 @@ function HandlingMouse() {
     }
 
     addEventListener('mousemove', moveHandler);
-    addEventListener('mouseup', mouseup)
+    addEventListener('mouseup', mouseup);
   }
 
 }
@@ -121,24 +125,37 @@ function HandlingMouse() {
 
 
 /**
- * @param {Number[]} referenceVector
- * @param {Number[]} mouseVector
- * @param {Number} scaleRatio
+ * @param {Number[]} pivotVector
+ * @param {Number[]} newVector
+ * @param {Number} referenceScale
  */
-function setVector(referenceVector, mouseVector, scaleRatio) {
+function setVector(pivotVector, newVector, referenceScale) {
   vector = Vector2.add(
-    Vector2.scalarMul(referenceVector, scaleRatio),
-    Vector2.scalarMul(mouseVector, 1-scaleRatio)
+    pivotVector,
+    Vector2.scalarMul(
+      Vector2.delta(pivotVector, newVector),
+      scale / referenceScale
+    )
   );
   isUpdated = true;
 }
 
+/**
+ * @param {Number[]} pivotVector
+ * @param {Number} newScale
+ */
+function setScale(pivotVector, newScale) {
+  const referenceScale = scale;
+  scale = newScale;
+  setVector(pivotVector, vector, referenceScale);
+}
 
 
-/** @param {Number[]} clientMouseVector  */
-function getMapMouseVector(clientMouseVector) {
+
+/** @param {Number[]} clientVector  */
+function calcViewportOffsetVector(clientVector) {
   const rect = body.getBoundingClientRect();
-  return Vector2.difference([rect.left, rect.top], clientMouseVector);
+  return Vector2.delta([rect.left, rect.top], clientVector);
 }
 
 

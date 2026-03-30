@@ -21,16 +21,16 @@ export function update(updateData) {
 
 
 /** @param {Number[]} coordinate */
-export function getIndexByCoordinate(coordinate) {
-  return Coordinate.getIndexByCoordinate(coordinate, size);
+export function calcIndexFromCoordinate(coordinate) {
+  return Coordinate.calcIndexFromCoordinate(coordinate, size);
 }
 
 /** @param {Number} index */
-export function getCoordinateByIndex(index) {
-  return Coordinate.getCoordinateByIndex(index, size);
+export function calcCoordinateFromIndex(index) {
+  return Coordinate.calcCoordinateFromIndex(index, size);
 }
 
 /** @param {Number} index */
-export function getIndexsByAround(index) {
-  return Coordinate.getIndexsByAround(index, size);
+export function calcNeighborIndexesFromIndex(index) {
+  return Coordinate.calcNeighborIndexesFromIndex(index, size);
 }

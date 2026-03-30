@@ -3,14 +3,12 @@
 import * as Vector2 from './vector2.js';
 const [X, Y] = [0, 1];
 
-
-
 /**
  * @param {Number[]} reference
  * @param {Number[]} gridSize
  * @returns {(target: Number[]) => Number[]}
  */
-export function createGetVectorByCoordinate(reference, gridSize) {
+export function createCalcVectorFromCoordinate(reference, gridSize) {
   return target => [
     reference[X] + gridSize[X]*( target[X]*2 + (target[Y] & 1) ),
     reference[Y] + gridSize[Y]*target[Y]*3
@@ -20,7 +18,7 @@ export function createGetVectorByCoordinate(reference, gridSize) {
  * @param {Number[]} vector
  * @param {Number[]} divisor
  */
-export function getCoordinateByVector(vector, divisor) {
+export function calcCoordinateFromVector(vector, divisor) {
   const coordinate = Vector2.divfloor(
     [vector [X], vector[Y] - divisor[Y]*0.5],
     [divisor[X], divisor[Y]*3]
@@ -33,7 +31,7 @@ export function getCoordinateByVector(vector, divisor) {
  * @param {Number[]} coordinate
  * @param {Number[]} size
  */
-export function getIndexByCoordinate(coordinate, size) {
+export function calcIndexFromCoordinate(coordinate, size) {
   if (
     0 <= coordinate[X] && coordinate[X] < size[X] &&
     0 <= coordinate[Y] && coordinate[Y] < size[Y]
@@ -45,7 +43,7 @@ export function getIndexByCoordinate(coordinate, size) {
  * @param {Number} index
  * @param {Number[]} size
  */
-export function getCoordinateByIndex(index, size) {
+export function calcCoordinateFromIndex(index, size) {
   const coordinateX = index % size[Y];
   return [coordinateX, (index-coordinateX) / size[Y]];
 }
@@ -53,19 +51,19 @@ export function getCoordinateByIndex(index, size) {
  * @param {Number[][]} coordinates
  * @param {Number[]} size
  */
-export function getIndexsByCoordinates(coordinates, size) {
-  const indexs = [];
+export function calcIndexesFromCoordinates(coordinates, size) {
+  const indexes = [];
   for (const coordinate of coordinates) {
-    const index = getIndexByCoordinate(coordinate, size);
-    if (index !== undefined) indexs.push(index);
+    const index = calcIndexFromCoordinate(coordinate, size);
+    if (index !== undefined) indexes.push(index);
   }
-  return indexs;
+  return indexes;
 }
 
 /**
  * @param {Number[]} relative
  */
-export function getDistanceByRelativeCoordinate(relative) {
+export function calcDistanceFromRelativeCoordinate(relative) {
   const [dx, dy] = relative.map(Math.abs);
   return dy + Math.max(dx - Math.ceil(dy * 0.5), 0);
 }
@@ -73,7 +71,7 @@ export function getDistanceByRelativeCoordinate(relative) {
  * @param {Number[]} coordinate
  * @param {Number} distance
  */
-export function getCoordinatesByDistance(coordinate, distance) {
+export function calcCoordinatesFromDistance(coordinate, distance) {
   const coordinates = [];
   for (let dx = distance+1; --dx;) {
     coordinates.push(shiftX(coordinate, dx));
@@ -82,7 +80,7 @@ export function getCoordinatesByDistance(coordinate, distance) {
   for (const direction of straightDirections) {
     let reference = shiftX(coordinate, -distance);
     for (let yCounter = distance+1; --yCounter;) {
-      reference = getCoordinateByRelativeCoordinate(reference, direction);
+      reference = calcCoordinateFromRelativeCoordinate(reference, direction);
       for (let dx = distance + yCounter; dx--;) {
         coordinates.push(shiftX(reference, dx));
       }
@@ -95,21 +93,21 @@ export function getCoordinatesByDistance(coordinate, distance) {
  * @param {Number} index
  * @param {Number[]} size
  */
-export function getIndexsByAround(index, size) {
-  const indexs = [], coordinate = getCoordinateByIndex(index, size);
+export function calcNeighborIndexesFromIndex(index, size) {
+  const indexes = [], coordinate = calcCoordinateFromIndex(index, size);
   for (const direction of directions) {
-    const target = getIndexByCoordinate(getCoordinateByRelativeCoordinate(coordinate, direction), size);
-    if (target !== undefined) indexs.push(target);
+    const target = calcIndexFromCoordinate(calcCoordinateFromRelativeCoordinate(coordinate, direction), size);
+    if (target !== undefined) indexes.push(target);
   }
-  return indexs;
+  return indexes;
 }
 
 /**
  * @param {Number[]} reference
  * @param {Number[]} target
  */
-export function getRelativeCoordinateByCoordinates(reference, target) {
-  const [dx, dy] = Vector2.difference(reference, target);
+export function calcRelativeCoordinateFromCoordinates(reference, target) {
+  const [dx, dy] = Vector2.delta(reference, target);
   return [
     dx + (dx < 0? -(1 & dy & reference[Y]) : 1 & dy &(reference[Y] ^ 1)),
     dy
@@ -119,7 +117,7 @@ export function getRelativeCoordinateByCoordinates(reference, target) {
  * @param {Number[]} reference
  * @param {Number[]} relative
  */
-export function getCoordinateByRelativeCoordinate(reference, relative) {
+export function calcCoordinateFromRelativeCoordinate(reference, relative) {
   return [
     (reference[X] + relative[X]) + (relative[X] > 0? -(1 & relative[Y] & (reference[Y]^1)) : 1 & relative[Y] & reference[Y]),
     (reference[Y] + relative[Y])
@@ -132,8 +130,8 @@ export function getCoordinateByRelativeCoordinate(reference, relative) {
  * @param {Number[]} coordinate
  * @param {Number} dx
  */
-function shiftX([px, py], dx) {
-  return [px + dx, py];
+function shiftX([x, y], dx) {
+  return [x + dx, y];
 }
 
 const straightDirections = [[1,-1], [1,1]];

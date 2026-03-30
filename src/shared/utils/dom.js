@@ -1,11 +1,6 @@
 "use strict";
 const SVGNS = "http://www.w3.org/2000/svg";
 
-// const t = templateUnit.content.cloneNode(true);
-// const a = document.createElement('div');
-// a.append(t);
-
-
 /**
  * @param  {...Element} args
  */
@@ -14,7 +9,6 @@ export function template(...args) {
   template.content.append(...args);
   return template;
 }
-
 /**
  * @param {String} cssClass
  * @param  {...Element} args
@@ -36,7 +30,6 @@ export function div(cssClass, ...args) {
 export function buildHTML(tagName) {
   return constructor(document.createElement(tagName));
 }
-
 /**
  * @template {keyof SVGElementTagNameMap} K
  * @param {K} tagName
@@ -45,7 +38,6 @@ export function buildHTML(tagName) {
 export function buildSVG(tagName) {
   return constructor(document.createElementNS(SVGNS, tagName));
 }
-
 
 /**
  * @template {HTMLElement | SVGElement} T
@@ -148,7 +140,6 @@ function qsTag(root, tag) {
   return el;
 }
 
-// qsTag(document, 'canvas').getContext
 
 
 /**

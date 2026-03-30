@@ -5,29 +5,29 @@ const [X, Y] = [0, 1];
  * @param {Number[][]} vector2List
  */
 export function sum(vector2List) {
-  let sum = [0, 0];
+  let base = [0, 0];
   for (const vector of vector2List) {
-    sum[X] += vector[X];
-    sum[Y] += vector[Y];
+    base[X] += vector[X];
+    base[Y] += vector[Y];
   }
-  return sum;
+  return base;
 }
 
 /**
- * @param {Number[]} reference
+ * @param {Number[]} base
  * @param {Number[]} target
  */
-export function add(reference, target) {
+export function add(base, target) {
   return [
-    reference[X] + target[X],
-    reference[Y] + target[Y]
+    base[X] + target[X],
+    base[Y] + target[Y]
   ]
 }
 /**
  * @param {Number[]} reference
  * @param {Number[]} target
  */
-export function difference(reference, target) {
+export function delta(reference, target) {
   return [
     target[X] - reference[X],
     target[Y] - reference[Y]

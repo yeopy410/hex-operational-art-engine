@@ -8,19 +8,21 @@ const [X, Y] = [0, 1];
 
 
 export function test() {
-  const reference = Vector2.sum([
-    [Setting.GRID_SIZE[X], Setting.GRID_SIZE[Y]*2],
-    Vector2.scalarMul(Setting.UNIT_SIZE, -0.5),
-    [-Setting.UNIT_BORDER, -Setting.UNIT_BORDER]
-  ])
-  const getVectorByCoordinate = Coordinate.createGetVectorByCoordinate(reference, Setting.GRID_SIZE);
+  const reference = Vector2.delta(
+    Vector2.add(
+      Vector2.scalarMul(Setting.UNIT_SIZE, 0.5),
+      [Setting.UNIT_BORDER, Setting.UNIT_BORDER]
+    ),
+    [Setting.GRID_SIZE[X], Setting.GRID_SIZE[Y]*2]
+  );
+  const calcVectorFromCoordinate = Coordinate.createCalcVectorFromCoordinate(reference, Setting.GRID_SIZE);
 
-  const test = new UnitStackUI(1).setVector(getVectorByCoordinate([1, 1]));
+  const test = new UnitStackUI(1).setVector(calcVectorFromCoordinate([1, 1]));
   test.style.setProperty('--background-color', 'blue');
   test.style.setProperty('--unit-data-count', `'15'`);
   test.style.setProperty('--unit-data-force', `'17'`);
 
-  const test2 = new UnitStackUI(2).setVector(getVectorByCoordinate([3, 2]));
+  const test2 = new UnitStackUI(2).setVector(calcVectorFromCoordinate([3, 2]));
   test2.style.setProperty('--background-color', 'red');
 
   layer.append(test, test2);

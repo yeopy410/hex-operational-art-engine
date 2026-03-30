@@ -44,14 +44,14 @@ export function setHexTextureList(textureList) {
  */
 export function setHexMap(mapSize, hexArray) {
   const reference = [0, 0];
-  const getVectorByCoordinate = Coordinate.createGetVectorByCoordinate(reference, Setting.GRID_SIZE);
+  const calcVectorFromCoordinate = Coordinate.createCalcVectorFromCoordinate(reference, Setting.GRID_SIZE);
 
   const fragment = document.createDocumentFragment();
   let i = 0;
   for (let y = 0; y < mapSize[X]; y += 1) {
     for (let x = 0; x < mapSize[Y]; x += 1) {
       const hex = new HexUI(i, [x, y], hexArray[i])
-        .setVector(getVectorByCoordinate([x, y]))
+        .setVector(calcVectorFromCoordinate([x, y]))
         .setColor(hexTextureList[hexArray[i]]);
       hexUIArray.push(hex);
       fragment.append(hex.svg);

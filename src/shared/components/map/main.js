@@ -3,7 +3,7 @@ import * as DOM from '../../utils/dom.js';
 import * as Coordinate from '../../utils/coordinate.js';
 import * as Viewport from './_viewport.js';
 import * as Hex from './_hex.js';
-import * as UnitStack from './_unit-stack.js';
+import * as Unit from './_unit.js';
 
 
 
@@ -25,10 +25,10 @@ void (function main() {
   svgDefs.append(Hex.hexPolygon);
   svgLayers.append(Hex.layer, decorationLayer, interactionLayer);
   svg.append(svgDefs, svgLayers);
-  viewport.append(svg, UnitStack.layer);
+  viewport.append(svg, Unit.layer);
 
-  UnitStack.test();
-  UnitStack.addEventListenerUnitStackUI('click', target => console.log(target.key));
+  Unit.test();
+  Unit.addEventListenerUnitUI('click', target => console.log(target.key));
   Viewport.setUpdateMouseCoordinateHandler(updateMouseCoordinateHandler);
   performFrame();
 

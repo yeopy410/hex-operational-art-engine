@@ -17,12 +17,12 @@ export function test() {
   );
   const calcVectorFromCoordinate = Coordinate.createCalcVectorFromCoordinate(reference, Setting.GRID_SIZE);
 
-  const test = new UnitStackUI(1).setVector(calcVectorFromCoordinate([1, 1]));
+  const test = new UnitUI(1).setVector(calcVectorFromCoordinate([1, 1]));
   test.style.setProperty('--background-color', 'blue');
-  test.style.setProperty('--unit-data-count', `'15'`);
-  test.style.setProperty('--unit-data-force', `'17'`);
+  test.style.setProperty('--unit-data-attack', `'15'`);
+  test.style.setProperty('--unit-data-defense', `'17'`);
 
-  const test2 = new UnitStackUI(2).setVector(calcVectorFromCoordinate([3, 2]));
+  const test2 = new UnitUI(2).setVector(calcVectorFromCoordinate([3, 2]));
   test2.style.setProperty('--background-color', 'red');
 
   layer.append(test, test2);
@@ -43,11 +43,11 @@ let mapSize = [0, 0];
 
 /**
  * @param {String} type
- * @param {(target: UnitStackUI) => void} handler
+ * @param {(target: UnitUI) => void} handler
  */
-export function addEventListenerUnitStackUI(type, handler) {
+export function addEventListenerUnitUI(type, handler) {
   addEventListener(type, e => {
-    if (e.target instanceof UnitStackUI) {
+    if (e.target instanceof UnitUI) {
       handler(e.target);
     }
   });
@@ -64,24 +64,24 @@ export function init(mapSizeData, initDataMapUnit) {
 
 
 
-export function updateUnitStack(updateDataMapUnit) {
+export function updateUnit(updateDataMapUnit) {
 
 }
 
 
 
-class UnitStackUI extends HTMLElement {
+class UnitUI extends HTMLElement {
   static _template = DOM.template(
-    DOM.div('map-unit-stack-symbol-img'),
-    DOM.div('map-unit-stack-data-count'),
-    DOM.div('map-unit-stack-data-force')
+    DOM.div('map-unit-symbol-img'),
+    DOM.div('map-unit-data-attack'),
+    DOM.div('map-unit-data-defense')
   );
 
 
   /** @param {Number} key  */
   constructor(key) {
     super();
-    this.append(UnitStackUI._template.content.cloneNode(true));
+    this.append(UnitUI._template.content.cloneNode(true));
     this.key = key
   }
 
@@ -94,4 +94,4 @@ class UnitStackUI extends HTMLElement {
   }
 
 }
-customElements.define('map-unit-stack', UnitStackUI);
+customElements.define('map-unit', UnitUI);

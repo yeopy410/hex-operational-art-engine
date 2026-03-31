@@ -10,7 +10,7 @@ export function template(...args) {
   return template;
 }
 /**
- * @param {String} cssClass
+ * @param {string} cssClass
  * @param  {...Element} args
  */
 export function div(cssClass, ...args) {
@@ -25,53 +25,54 @@ export function div(cssClass, ...args) {
 /**
  * @template {keyof HTMLElementTagNameMap} K
  * @param {K} tagName
- * @returns {constructor<HTMLElementTagNameMap[K]>}
+ * @returns {builder<HTMLElementTagNameMap[K]>}
  */
 export function buildHTML(tagName) {
-  return constructor(document.createElement(tagName));
+  return createBuilder(document.createElement(tagName));
 }
 /**
  * @template {keyof SVGElementTagNameMap} K
  * @param {K} tagName
- * @returns {constructor<SVGElementTagNameMap[K]>}
+ * @returns {builder<SVGElementTagNameMap[K]>}
  */
 export function buildSVG(tagName) {
-  return constructor(document.createElementNS(SVGNS, tagName));
+  return createBuilder(document.createElementNS(SVGNS, tagName));
 }
 
 /**
  * @template {HTMLElement | SVGElement} T
- * @typedef {Object} constructor
- * @property {(...tokens: string[]) => constructor<T>} setClassList
- * @property {(qualifiedName: string, value: string) => constructor<T>} setAttribute
- * @property {(property: string, value: string | null, priority?: string | undefined) => constructor<T>} setProperty
- * @property {() => T} get
+ * @typedef {Object} builder
+ * @property {(...tokens: string[]) => builder<T>} addClassList
+ * @property {(qualifiedName: string, value: string) => builder<T>} setAttribute
+ * @property {(property: string, value: string | null, priority?: string | undefined) => builder<T>} setProperty
+ * @property {() => T} build
  */
 
 /**
  * @template {HTMLElement | SVGElement} T
  * @param {T} element
- * @returns {constructor<T>}
  */
-function constructor(element) {
-  return {
-    setClassList: (...tokens) => {
+function createBuilder(element) {
+  /** @type {builder<T>} */
+  const api = {
+    addClassList: (...tokens) => {
       element.classList.add(...tokens);
-      return constructor(element);
+      return api;
     },
 
     setAttribute: (qualifiedName, value) => {
       element.setAttribute(qualifiedName, value);
-      return constructor(element);
+      return api;
     },
 
-    setProperty: (property, valu, priority) => {
-      element.style.setProperty(property, valu, priority);
-      return constructor(element);
+    setProperty: (property, value, priority) => {
+      element.style.setProperty(property, value, priority);
+      return api;
     },
 
-    get: () => element
-  }
+    build: () => element
+  };
+  return api;
 }
 
 

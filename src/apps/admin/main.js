@@ -18,7 +18,7 @@ export function start(baseDir) {
 
 
 
-/** @param {String} baseDir */
+/** @param {string} baseDir */
 function createWindow(baseDir) {
   const win = new BrowserWindow({
     webPreferences: {

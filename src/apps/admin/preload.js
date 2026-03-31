@@ -3,9 +3,9 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 
 
-/** @typedef {API} ElectronAPI */
+/** @typedef {ElectronAPI} IElectronAPI */
 
-class API {
+class ElectronAPI {
   constructor() {
     /** @param {any} data */
     this.sendMessage = data => {
@@ -19,4 +19,4 @@ class API {
   }
 }
 
-contextBridge.exposeInMainWorld('electronAPI', new API());
+contextBridge.exposeInMainWorld('electronAPI', new ElectronAPI());

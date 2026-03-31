@@ -2,7 +2,7 @@
 const [X, Y] = [0, 1];
 
 /**
- * @param {Number[][]} vector2List
+ * @param {number[][]} vector2List
  */
 export function sum(vector2List) {
   let base = [0, 0];
@@ -14,8 +14,8 @@ export function sum(vector2List) {
 }
 
 /**
- * @param {Number[]} base
- * @param {Number[]} target
+ * @param {number[]} base
+ * @param {number[]} target
  */
 export function add(base, target) {
   return [
@@ -24,8 +24,8 @@ export function add(base, target) {
   ]
 }
 /**
- * @param {Number[]} reference
- * @param {Number[]} target
+ * @param {number[]} reference
+ * @param {number[]} target
  */
 export function delta(reference, target) {
   return [
@@ -35,16 +35,16 @@ export function delta(reference, target) {
 }
 
 /**
- * @param {Number[]} vector2
- * @param {Number} scalar
+ * @param {number[]} vector2
+ * @param {number} scalar
  */
 export function scalarMul(vector2, scalar) {
   return [vector2[X]*scalar, vector2[Y]*scalar];
 }
 
 /**
- * @param {Number[]} dividend
- * @param {Number[]} divisor
+ * @param {number[]} dividend
+ * @param {number[]} divisor
  */
 export function divfloor(dividend, divisor) {
   return [
@@ -54,8 +54,8 @@ export function divfloor(dividend, divisor) {
 }
 
 /**
- * @param {Number[]} dividend
- * @param {Number[]} divisor
+ * @param {number[]} dividend
+ * @param {number[]} divisor
  */
 export function divmod(dividend, divisor) {
   const remainder = [
@@ -70,7 +70,7 @@ export function divmod(dividend, divisor) {
 }
 
 /**
- * @param {Number[]} vector2
+ * @param {number[]} vector2
  */
 export function hypotenuse(vector2) {
   return Math.sqrt( vector2[X]**2 + vector2[Y]**2 );

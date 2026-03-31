@@ -42,7 +42,7 @@ export function checkOPEN() {
 }
 
 /**
- * @param {String} type
+ * @param {string} type
  * @param {any} data
  */
 export function send(type, data) {
@@ -94,7 +94,7 @@ function connect() {
 
 
 /**
- * @param {String} key
+ * @param {string} key
  * @param {any} [data]
  */
 function performHandler(key, data) {

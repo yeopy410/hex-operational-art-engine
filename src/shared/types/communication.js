@@ -2,7 +2,7 @@
 
 export class Message {
   /**
-   * @param {String} type
+   * @param {string} type
    * @param {*} data
    */
   constructor(
@@ -16,9 +16,9 @@ export class Message {
 
 export class WebSocketProtocol {
   /**
-   * @param {String} team
-   * @param {String} password
-   * @param {String} name
+   * @param {string} team
+   * @param {string} password
+   * @param {string} name
    */
   constructor(
     team,
@@ -46,7 +46,7 @@ export class InitData { // 세력 데이터도 추가 필요.
 
 export class InitDataMap { // 추가로 장식SVG(강과 연결로 등)와 거점 데이터도 추가 필요. UI와 명령생성용 ZOC나 보급망이나 지휘망은 클라이언트에서 직접 계산하기?
   /**
-   * @param {Number[]} size
+   * @param {number[]} size
    * @param {InitDataMapHex} initDataMapHex
    * @param {InitDataMapUnit} initDataMapUnit
    */
@@ -63,8 +63,8 @@ export class InitDataMap { // 추가로 장식SVG(강과 연결로 등)와 거�
 
 export class InitDataMapHex {
   /**
-   * @param {String[]} terrainList
-   * @param {Number[]} hexArray
+   * @param {string[]} terrainList
+   * @param {number[]} hexArray
    */
   constructor(
     terrainList,

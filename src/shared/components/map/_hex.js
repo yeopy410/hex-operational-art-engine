@@ -9,12 +9,12 @@ const [X, Y] = [0, 1];
 export const hexPolygon = DOM.buildSVG('polygon')
   .setAttribute('id', 'hex-polygon')
   .setAttribute('points', getPoints())
-  .get();
-export const layer = DOM.buildSVG('g').get();
+  .build();
+export const layer = DOM.buildSVG('g').build();
 
 /** @type {HexUI[]} */
 let hexUIArray = [];
-/** @type {String[]} */
+/** @type {string[]} */
 let hexTextureList = [];
 
 
@@ -26,7 +26,7 @@ export function clearHexMap() {
 
 
 
-/** @param {String[]} textureList */
+/** @param {string[]} textureList */
 export function setHexTextureList(textureList) {
   hexTextureList = textureList;
 
@@ -39,8 +39,8 @@ export function setHexTextureList(textureList) {
 
 
 /**
- * @param {Number[]} mapSize
- * @param {Number[]} hexArray
+ * @param {number[]} mapSize
+ * @param {number[]} hexArray
  */
 export function setHexMap(mapSize, hexArray) {
   const reference = [0, 0];
@@ -97,26 +97,26 @@ function getPoints() {
 
 class HexUI {
   /**
-   * @param {Number} index
-   * @param {Number[]} coordinate
-   * @param {Number} terrain
+   * @param {number} index
+   * @param {number[]} coordinate
+   * @param {number} terrain
    */
   constructor(index, coordinate, terrain) {
     this.index = index;
     this.coordinate = coordinate;
     this.terrain = terrain;
-    this.svg = DOM.buildSVG('use').setAttribute('href', '#hex-polygon').get();
+    this.svg = DOM.buildSVG('use').setAttribute('href', '#hex-polygon').build();
   }
 
 
-  /** @param {Number[]} vector */
+  /** @param {number[]} vector */
   setVector(vector) {
     this.svg.setAttribute('x', vector[X].toString());
     this.svg.setAttribute('y', vector[Y].toString());
     return this;
   }
 
-  /** @param {String} color */
+  /** @param {string} color */
   setColor(color) {
     this.svg.setAttribute('fill', color);
     return this;

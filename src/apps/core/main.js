@@ -17,9 +17,9 @@ const updateSet = new Set();
 /** @type {Set<(data: import('../../shared/types/communication.js').CommandData[]) => void>} */
 const commandSet = new Set();
 
-//   /** @type {Map<String, import('./structure.js').Identifier>} */
+//   /** @type {Map<string, import('./structure.js').Identifier>} */
 // const identifierMap = new Map();
-//   /** @type {Map<String, import('./structure.js').Faction>} */
+//   /** @type {Map<string, import('./structure.js').Faction>} */
 // const factionMap = new Map();
 
 const app = express();
@@ -27,8 +27,8 @@ const app = express();
 
 
 /**
- * @param {String} baseDir
- * @param {Number} port
+ * @param {string} baseDir
+ * @param {number} port
  */
 export function start(baseDir, port) {
   const httpServer = app.listen(port);
@@ -109,11 +109,11 @@ function HandlingCommand() {
 
 
 class UpdateDataConstructor {
-  /** @type {Map<Number, import('../public/structure/model.js').Unit>} */
+  /** @type {Map<number, import('../public/structure/model.js').Unit>} */
   #unitMap = new Map();
 
 
-  /** @param {Number} key */
+  /** @param {number} key */
   get(key) {
     let unit = this.#unitMap.get(key);
     if (unit === undefined) {
@@ -153,7 +153,7 @@ function Receiving() {
   }
 
   /**
-   * @param {String} protocol
+   * @param {string} protocol
    * @param {any} msg
    */
   function onmessage(protocol, msg) {
@@ -173,7 +173,7 @@ function Receiving() {
   }
 
   /**
-   * @param {String} protocol
+   * @param {string} protocol
    * @param {Error} error
    */
   function onerror(protocol, error) {
@@ -181,8 +181,8 @@ function Receiving() {
   }
 
   /**
-   * @param {String} protocol
-   * @param {Number} code
+   * @param {string} protocol
+   * @param {number} code
    */
   function onclose(protocol, code) {
     console.log(`[${protocol}] 연결종료, code: ${code}, numder: ${webSocketServer.clients.size}`);
@@ -193,7 +193,7 @@ function Receiving() {
 
 
 /**
- * @param {String} type
+ * @param {string} type
  * @param {any} data
  */
 function sendMessage(type, data) {

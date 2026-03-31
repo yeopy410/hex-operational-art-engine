@@ -1,7 +1,7 @@
 "use strict";
 
 // @ts-ignore
-/** @type {import('./preload.js').ElectronAPI} */ const api = window.electronAPI;
+/** @type {import('./preload.js').IElectronAPI} */ const api = window.electronAPI;
 
 
 

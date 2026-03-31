@@ -31,18 +31,18 @@ export function test() {
 
 
 export const layer = DOM.buildHTML('div')
-  .setClassList('map-layer')
+  .addClassList('map-layer')
   .setProperty('--unit-size-x', `${Setting.UNIT_SIZE[X]}px`)
   .setProperty('--unit-size-y', `${Setting.UNIT_SIZE[Y]}px`)
   .setProperty('--unit-border-width', `${Setting.UNIT_BORDER}px`)
   .setProperty('--unit-border-color', 'black')
-  .get();
-let mapSize = [0, 0];
+  .build();
 
 
 
 /**
- * @param {String} type
+ * 이거 지워서 유닛으로는 이벤트 받지 말고, 헥스 위치로 모든 마우스 입력 처리하기?
+ * @param {string} type
  * @param {(target: UnitUI) => void} handler
  */
 export function addEventListenerUnitUI(type, handler) {
@@ -56,10 +56,10 @@ export function addEventListenerUnitUI(type, handler) {
 
 
 /**
- * @param {Number[]} mapSizeData
+ * 
  */
-export function init(mapSizeData, initDataMapUnit) {
-  mapSize = mapSizeData;
+export function setUnitMap(initDataMapUnit) {
+
 }
 
 
@@ -78,7 +78,7 @@ class UnitUI extends HTMLElement {
   );
 
 
-  /** @param {Number} key  */
+  /** @param {number} key  */
   constructor(key) {
     super();
     this.append(UnitUI._template.content.cloneNode(true));
@@ -86,7 +86,7 @@ class UnitUI extends HTMLElement {
   }
 
 
-  /** @param {Number[]} vector */
+  /** @param {number[]} vector */
   setVector(vector) {
     this.style.setProperty('--unit-x', `${vector[X]}px`);
     this.style.setProperty('--unit-y', `${vector[Y]}px`);

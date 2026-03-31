@@ -4,9 +4,9 @@ import * as Vector2 from './vector2.js';
 const [X, Y] = [0, 1];
 
 /**
- * @param {Number[]} reference
- * @param {Number[]} gridSize
- * @returns {(target: Number[]) => Number[]}
+ * @param {number[]} reference
+ * @param {number[]} gridSize
+ * @returns {(target: number[]) => number[]}
  */
 export function createCalcVectorFromCoordinate(reference, gridSize) {
   return target => [
@@ -15,21 +15,21 @@ export function createCalcVectorFromCoordinate(reference, gridSize) {
   ]
 }
 /**
- * @param {Number[]} vector
- * @param {Number[]} divisor
+ * @param {number[]} vector
+ * @param {number[]} gridSize
  */
-export function calcCoordinateFromVector(vector, divisor) {
+export function calcCoordinateFromVector(vector, gridSize) {
   const coordinate = Vector2.divfloor(
-    [vector [X], vector[Y] - divisor[Y]*0.5],
-    [divisor[X], divisor[Y]*3]
+    [vector[X], vector[Y] - gridSize[Y]*0.5],
+    [gridSize[X], gridSize[Y]*3]
   )
   return [ (coordinate[X] - (coordinate[Y]&1))>>1, coordinate[Y] ];
 }
 
 /**
  * 인덱스가 undefined라면 size를 벗어난 유효하지 않은 좌표라는 의미.
- * @param {Number[]} coordinate
- * @param {Number[]} size
+ * @param {number[]} coordinate
+ * @param {number[]} size
  */
 export function calcIndexFromCoordinate(coordinate, size) {
   if (
@@ -40,16 +40,16 @@ export function calcIndexFromCoordinate(coordinate, size) {
   }
 }
 /**
- * @param {Number} index
- * @param {Number[]} size
+ * @param {number} index
+ * @param {number[]} size
  */
 export function calcCoordinateFromIndex(index, size) {
   const coordinateX = index % size[Y];
   return [coordinateX, (index-coordinateX) / size[Y]];
 }
 /**
- * @param {Number[][]} coordinates
- * @param {Number[]} size
+ * @param {number[][]} coordinates
+ * @param {number[]} size
  */
 export function calcIndexesFromCoordinates(coordinates, size) {
   const indexes = [];
@@ -61,15 +61,15 @@ export function calcIndexesFromCoordinates(coordinates, size) {
 }
 
 /**
- * @param {Number[]} relative
+ * @param {number[]} relative
  */
 export function calcDistanceFromRelativeCoordinate(relative) {
   const [dx, dy] = relative.map(Math.abs);
   return dy + Math.max(dx - Math.ceil(dy * 0.5), 0);
 }
 /**
- * @param {Number[]} coordinate
- * @param {Number} distance
+ * @param {number[]} coordinate
+ * @param {number} distance
  */
 export function calcCoordinatesFromDistance(coordinate, distance) {
   const coordinates = [];
@@ -90,8 +90,8 @@ export function calcCoordinatesFromDistance(coordinate, distance) {
 }
 
 /**
- * @param {Number} index
- * @param {Number[]} size
+ * @param {number} index
+ * @param {number[]} size
  */
 export function calcNeighborIndexesFromIndex(index, size) {
   const indexes = [], coordinate = calcCoordinateFromIndex(index, size);
@@ -103,8 +103,8 @@ export function calcNeighborIndexesFromIndex(index, size) {
 }
 
 /**
- * @param {Number[]} reference
- * @param {Number[]} target
+ * @param {number[]} reference
+ * @param {number[]} target
  */
 export function calcRelativeCoordinateFromCoordinates(reference, target) {
   const [dx, dy] = Vector2.delta(reference, target);
@@ -114,8 +114,8 @@ export function calcRelativeCoordinateFromCoordinates(reference, target) {
   ]
 }
 /**
- * @param {Number[]} reference
- * @param {Number[]} relative
+ * @param {number[]} reference
+ * @param {number[]} relative
  */
 export function calcCoordinateFromRelativeCoordinate(reference, relative) {
   return [
@@ -127,8 +127,8 @@ export function calcCoordinateFromRelativeCoordinate(reference, relative) {
 
 
 /**
- * @param {Number[]} coordinate
- * @param {Number} dx
+ * @param {number[]} coordinate
+ * @param {number} dx
  */
 function shiftX([x, y], dx) {
   return [x + dx, y];

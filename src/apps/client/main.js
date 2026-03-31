@@ -1,10 +1,10 @@
 "use strict";
-import * as Map from '/@shared/components/map/main.js';
+import { MapUI } from '/@shared/components/map/main.js';
 
 
 
 // test
-import { InitDataMap, InitDataMapHex, InitDataMapUnit } from '/@shared/types/communication.js';
+import { InitDataMap } from '/@shared/types/communication.js';
 {
   const [X, Y] = [0, 1];
 
@@ -12,25 +12,33 @@ import { InitDataMap, InitDataMapHex, InitDataMapUnit } from '/@shared/types/com
   const terrainList = ['rgb(245, 245, 220)']
   const hexArray = new Array(size[X] * size[Y]).fill(0);
 
-  const initDataMapHex = new InitDataMapHex(terrainList, hexArray);
-  const initDataMap = new InitDataMap(size, initDataMapHex, new InitDataMapUnit());
+  const initDataMap = new InitDataMap(size, terrainList, hexArray);
 
-  Map.init(initDataMap);
-  // Map.viewport.style.width = '500px';
-  // Map.viewport.style.height = '500px';
-  // Map.viewport.style.transform = 'translate(100px, 50px)';
-  // Map.viewport.style.marginLeft = '150px';
 
-  // addEventListener('click', e => console.log(e.target))
+  const mapUI = new MapUI();
+  mapUI.init(initDataMap);
+  document.body.append(mapUI);
 
-  document.body.append(Map.viewport);
+
+  // mapUI.addMousemoveHandler(ctx => {
+  //   console.log(ctx.coordinate)
+  // })
+  mapUI.addMousedownHandler(0, ctx => {
+    console.log(ctx.coordinate)
+  })
+
 
   resize();
   addEventListener('resize', resize);
-}
+  performFrame();
 
+  function resize() {
+    mapUI.resize([innerWidth, innerHeight]);
+  }
 
-function resize() {
-  Map.viewport.style.width  = `${innerWidth}px`;
-  Map.viewport.style.height = `${innerHeight}px`;
+  function performFrame() {
+    mapUI.performTransform();
+    requestAnimationFrame(performFrame);
+  }
+
 }

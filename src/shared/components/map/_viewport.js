@@ -1,8 +1,7 @@
 "use strict";
-import * as DOM from '../../utils/dom.js';
 import * as Coordinate from '../../utils/coordinate.js';
 import * as Vector2 from '../../utils/vector2.js';
-import * as Setting from './setting.js';
+import { maybe } from '../../utils/functional.js'
 const [X, Y] = [0, 1];
 const BUTTON = {
   LEFT  : 0,
@@ -10,104 +9,127 @@ const BUTTON = {
   RIGHT : 2
 }
 
-
-
-export const body = DOM.buildHTML('div').addClassList('map-viewport').build();
-
-let vector = [0,0];
-let scale = 1;
-let isUpdated = true;
+// 여길 _interaction.js로 바꾸기?
 
 
 
-void (function main() {
-  HandlingWheel();
-  HandlingMouse();
-})();
+/**
+ * @typedef {Object} MousedownHandlerCtx
+ * @property {MouseEvent} event
+ * @property {number[]} coordinate
+ * @property {(color: string, handler: (hexSet: Set<number>) => void) => void} startDragSelectionHex
+ * 
+ * @typedef {Object} MousemoveHandlerCtx
+ * @property {MouseEvent} event
+ * @property {number[]} coordinate
+ */
 
-
-
-export function performTransform() {
-  if (isUpdated) {
-    body.style.setProperty('--layer-x', `${vector[X]}px`);
-    body.style.setProperty('--layer-y', `${vector[Y]}px`);
-    body.style.setProperty('--scale', scale.toString());
-    isUpdated = false;
+export class DataObject {
+  /**
+   * @param {import('./setting.js').IMapSetting} setting
+   * @param {HTMLElement} viewport
+   */
+  constructor(setting, viewport) {
+    this.setting = setting;
+    this.viewport = viewport;
+    this.vector = [0,0];
+    this.scale = 1;
+    this.isUpdated = true;
+    /** @type {Map<number, Set<(ctx: MousedownHandlerCtx) => void>>} */
+    this.MousedownHandlerSetMap = new Map();
+    /** @type {Set<(ctx: MousemoveHandlerCtx) => void>} */
+    this.mousemoveHandlerSet = new Set();
   }
 }
 
 
 
-/** @param {MouseEvent} event */
-export function calcCoordinateFromMouseEvent(event) {
-  return Coordinate.calcCoordinateFromVector(
-    Vector2.scalarMul(Vector2.delta(vector, calcViewportOffsetVector(event)), 1/scale),
-    Setting.GRID_SIZE
-  )
+/** @param {DataObject} data */
+export function performTransform(data) {
+  if (data.isUpdated) {
+    data.viewport.style.setProperty('--layer-x', `${data.vector[X]}px`);
+    data.viewport.style.setProperty('--layer-y', `${data.vector[Y]}px`);
+    data.viewport.style.setProperty('--scale', data.scale.toString());
+    data.isUpdated = false;
+  }
 }
 
 
 
-function HandlingWheel() {
-  body.addEventListener('wheel', wheel);
+/** @param {DataObject} data */
+export function startHandling(data) {
+  let mousemoveCoordinate = [0];
+  data.viewport.addEventListener('wheel', wheel);
+  data.viewport.addEventListener('mousemove', mousemove);
+  data.viewport.addEventListener('mousedown', mousedown);
 
 
   /** @param {WheelEvent} e */
   function wheel(e) {
     setScale(
-      calcViewportOffsetVector(e),
-      limitedToRange(scale-e.deltaY*Setting.SCALE_DELTA_MUL, Setting.SCALE_MIN, Setting.SCALE_MAX)
+      data,
+      calcViewportOffsetVector(data, e),
+      limitedToRange(
+        data.scale-e.deltaY * data.setting.scaleDeltaMul,
+        data.setting.scaleMin,
+        data.setting.scaleMax
+      )
     );
   }
 
-}
 
+  /** @param {MouseEvent} e */
+  function mousemove(e) {
+    const coordinate = calcCoordinateFromMouseEvent(data, e);
+    if (coordinate[0] === mousemoveCoordinate[0] && coordinate[1] === mousemoveCoordinate[1]) return;
 
-
-function HandlingMouse() {
-  body.addEventListener('mousedown', mousedown);
+    mousemoveCoordinate = coordinate;
+    const ctx = {
+      event: e,
+      coordinate: coordinate
+    }
+    data.mousemoveHandlerSet.forEach(handler => handler(ctx));
+  }
 
 
   /** @param {MouseEvent} e */
   function mousedown(e) {
+    maybe(data.MousedownHandlerSetMap.get(e.button)).ifSome(MousedownHandlerSet => {
+      const ctx = {
+        event: e,
+        coordinate: calcCoordinateFromMouseEvent(data, e),
+        startDragSelectionHex: createStartDragSelectionHex(data, e.button)
+      }
+      MousedownHandlerSet.forEach(handler => handler(ctx));
+    });
+
     if (e.button === BUTTON.WHEEL) {
-      moveUp(BUTTON.WHEEL, MouseWheelMove(Vector2.delta(vector, calcViewportOffsetVector(e)), scale));
-    }
-  }
+      const referenceVector = Vector2.delta(data.vector, calcViewportOffsetVector(data, e));
+      const referenceScale = data.scale;
 
-  /**
-   * @param {number[]} referenceVector
-   * @param {number} referenceScale
-   * @returns {(e: MouseEvent) => void}
-   */
-  function MouseWheelMove(referenceVector, referenceScale) {
-    return e => {
-      const viewportOffsetVector = calcViewportOffsetVector(e);
-      setVector(
-        viewportOffsetVector,
-        Vector2.delta(referenceVector, viewportOffsetVector),
-        referenceScale
-      );
-    }
-  }
+      /** @param {MouseEvent} e */
+      const wheelmove = e => {
+        const viewportOffsetVector = calcViewportOffsetVector(data, e);
+        setVector(
+          data,
+          viewportOffsetVector,
+          Vector2.delta(referenceVector, viewportOffsetVector),
+          referenceScale
+        );
+      }
 
-  /**
-   * @param {number} button
-   * @param {(e: MouseEvent) => void} moveHandler
-   * @param {(e: MouseEvent) => void} upHandler
-   */
-  function moveUp(button, moveHandler, upHandler=e=>{}) { // 이거 다른 곳에서 재사용할 생각없다면 MouseWheelMove와 함께 mousedown에 통합 고려.
-    /** @param {MouseEvent} e */
-    const mouseup = e => {
-      if (e.button !== button) return;
-      upHandler(e);
+      /** @param {MouseEvent} e */
+      const mouseup = e => {
+        if (e.button !== BUTTON.WHEEL) return;
 
-      removeEventListener('mousemove', moveHandler);
-      removeEventListener('mouseup', mouseup);
+        removeEventListener('mousemove', wheelmove);
+        removeEventListener('mouseup', mouseup);
+      }
+
+      addEventListener('mousemove', wheelmove);
+      addEventListener('mouseup', mouseup);
     }
 
-    addEventListener('mousemove', moveHandler);
-    addEventListener('mouseup', mouseup);
   }
 
 }
@@ -115,36 +137,69 @@ function HandlingMouse() {
 
 
 /**
+ * @param {DataObject} data
+ * @param {number} button
+ */
+function createStartDragSelectionHex(data, button) { // 추후에 기능 넣기 필요.
+  /** @type {(color: string, handler: (hexSet: Set<number>) => void) => void} */
+  const func = (color, handler) => {
+    // 오버레이 만들고, mousemoveHandlerSet에 dragHandler 추가하고
+    // 마우스업에 button조건으로 handler 실행과 dragHandler와 마우스업Handler 회수 추가하고
+  }
+  return func;
+}
+
+
+
+/**
+ * @param {DataObject} data
+ * @param {MouseEvent} event
+ */
+function calcCoordinateFromMouseEvent(data, event) {
+  return Coordinate.calcCoordinateFromVector(
+    Vector2.scalarMul(Vector2.delta(data.vector, calcViewportOffsetVector(data, event)), 1/data.scale),
+    data.setting.gridSize
+  )
+}
+
+
+
+/**
+ * @param {DataObject} data
  * @param {number[]} pivotVector
  * @param {number[]} newVector
  * @param {number} referenceScale
  */
-function setVector(pivotVector, newVector, referenceScale) {
-  vector = Vector2.add(
+function setVector(data, pivotVector, newVector, referenceScale) {
+  data.vector = Vector2.add(
     pivotVector,
     Vector2.scalarMul(
       Vector2.delta(pivotVector, newVector),
-      scale / referenceScale
+      data.scale / referenceScale
     )
   );
-  isUpdated = true;
+  data.isUpdated = true;
 }
 
 /**
+ * @param {DataObject} data
  * @param {number[]} pivotVector
  * @param {number} newScale
  */
-function setScale(pivotVector, newScale) {
-  const referenceScale = scale;
-  scale = newScale;
-  setVector(pivotVector, vector, referenceScale);
+function setScale(data, pivotVector, newScale) {
+  const referenceScale = data.scale;
+  data.scale = newScale;
+  setVector(data, pivotVector, data.vector, referenceScale);
 }
 
 
 
-/** @param {MouseEvent} e */
-function calcViewportOffsetVector(e) {
-  const rect = body.getBoundingClientRect();
+/**
+ * @param {DataObject} data
+ * @param {MouseEvent} e
+ */
+function calcViewportOffsetVector(data, e) {
+  const rect = data.viewport.getBoundingClientRect();
   return Vector2.delta([rect.left, rect.top], [e.clientX, e.clientY]);
 }
 

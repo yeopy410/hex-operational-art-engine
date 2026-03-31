@@ -1,8 +1,12 @@
-.map-viewport {
+map-viewport {
+  display: block;
   overflow: hidden;
   position: relative;
   font-size: 25px;
   font-weight: 700;
+}
+map-viewport * {
+  pointer-events: none;
 }
 .map-viewport-svg {
   pointer-events: none;
@@ -28,9 +32,6 @@ map-unit {
   background-color: var(--background-color);
   transform: translate(var(--unit-x), var(--unit-y));
   position: absolute;
-}
-map-unit * {
-  pointer-events: none;
 }
 .map-unit-symbol-img {
   width: 75px;

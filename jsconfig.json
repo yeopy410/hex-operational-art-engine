@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "module": "esnext",
+    "target": "ESNext",
+    "module": "ESNext",
     "baseUrl": "./src",
     "paths": {
       "/@shared/*": ["shared/*"],

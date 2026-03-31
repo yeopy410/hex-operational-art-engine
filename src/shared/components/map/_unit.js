@@ -2,20 +2,26 @@
 import * as DOM from '../../utils/dom.js';
 import * as Coordinate from '../../utils/coordinate.js';
 import * as Vector2 from '../../utils/vector2.js';
-import * as Setting from './setting.js';
 const [X, Y] = [0, 1];
 
 
 
-export function test() {
-  const reference = Vector2.delta(
-    Vector2.add(
-      Vector2.scalarMul(Setting.UNIT_SIZE, 0.5),
-      [Setting.UNIT_BORDER, Setting.UNIT_BORDER]
-    ),
-    [Setting.GRID_SIZE[X], Setting.GRID_SIZE[Y]*2]
-  );
-  const calcVectorFromCoordinate = Coordinate.createCalcVectorFromCoordinate(reference, Setting.GRID_SIZE);
+export class DataObject {
+  /**
+   * @param {import('./setting.js').IMapSetting} setting
+   * @param {HTMLDivElement} layer 
+   */
+  constructor(setting, layer) {
+    this.setting = setting;
+    this.layer = layer;
+  }
+}
+
+
+
+/** @param {DataObject} data */
+export function test(data) {
+  const calcVectorFromCoordinate = createCalcVectorFromCoordinate(data);
 
   const test = new UnitUI(1).setVector(calcVectorFromCoordinate([1, 1]));
   test.style.setProperty('--background-color', 'blue');
@@ -25,18 +31,8 @@ export function test() {
   const test2 = new UnitUI(2).setVector(calcVectorFromCoordinate([3, 2]));
   test2.style.setProperty('--background-color', 'red');
 
-  layer.append(test, test2);
+  data.layer.append(test, test2);
 }
-
-
-
-export const layer = DOM.buildHTML('div')
-  .addClassList('map-layer')
-  .setProperty('--unit-size-x', `${Setting.UNIT_SIZE[X]}px`)
-  .setProperty('--unit-size-y', `${Setting.UNIT_SIZE[Y]}px`)
-  .setProperty('--unit-border-width', `${Setting.UNIT_BORDER}px`)
-  .setProperty('--unit-border-color', 'black')
-  .build();
 
 
 
@@ -70,8 +66,22 @@ export function updateUnit(updateDataMapUnit) {
 
 
 
+/** @param {DataObject} data */
+function createCalcVectorFromCoordinate(data) {
+  const reference = Vector2.delta(
+    Vector2.add(
+      Vector2.scalarMul(data.setting.unitSize, 0.5),
+      [data.setting.unitBorder, data.setting.unitBorder]
+    ),
+    [data.setting.gridSize[X], data.setting.gridSize[Y]*2]
+  );
+  return Coordinate.createCalcVectorFromCoordinate(reference, data.setting.gridSize);
+}
+
+
+
 class UnitUI extends HTMLElement {
-  static _template = DOM.template(
+  static #template = DOM.template(
     DOM.div('map-unit-symbol-img'),
     DOM.div('map-unit-data-attack'),
     DOM.div('map-unit-data-defense')
@@ -81,8 +91,8 @@ class UnitUI extends HTMLElement {
   /** @param {number} key  */
   constructor(key) {
     super();
-    this.append(UnitUI._template.content.cloneNode(true));
-    this.key = key
+    this.append(UnitUI.#template.content.cloneNode(true));
+    this.key = key;
   }
 
 

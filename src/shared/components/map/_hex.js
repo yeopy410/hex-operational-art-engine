@@ -1,37 +1,44 @@
 "use strict";
 import * as DOM from '../../utils/dom.js';
 import * as Coordinate from '../../utils/coordinate.js';
-import * as Setting from './setting.js';
 const [X, Y] = [0, 1];
 
 
 
-export const hexPolygon = DOM.buildSVG('polygon')
-  .setAttribute('id', 'hex-polygon')
-  .setAttribute('points', getPoints())
-  .build();
-export const layer = DOM.buildSVG('g').build();
-
-/** @type {HexUI[]} */
-let hexUIArray = [];
-/** @type {string[]} */
-let hexTextureList = [];
-
-
-
-export function clearHexMap() {
-  hexUIArray = [];
-  layer.innerHTML = '';
+export class DataObject {
+  /**
+   * @param {import('./setting.js').IMapSetting} setting
+   * @param {SVGGElement} layer 
+   */
+  constructor(setting, layer) {
+    this.setting = setting;
+    this.layer = layer;
+    /** @type {import('./_hex.js').IHexUI[]} */
+    this.hexUIArray = [];
+    /** @type {string[]} */
+    this.hexTextureList = [];
+  }
 }
 
 
 
-/** @param {string[]} textureList */
-export function setHexTextureList(textureList) {
-  hexTextureList = textureList;
+/** @param {DataObject} data */
+export function clearHexMap(data) {
+  data.hexUIArray = [];
+  data.layer.innerHTML = '';
+}
 
-  for (const hexUI of hexUIArray) {
-    hexUI.setColor(hexTextureList[hexUI.terrain]);
+
+
+/**
+ * @param {DataObject} data
+ * @param {string[]} textureList
+ */
+export function setHexTextureList(data, textureList) {
+  data.hexTextureList = textureList;
+
+  for (const hexUI of data.hexUIArray) {
+    hexUI.setColor(data.hexTextureList[hexUI.terrain]);
   }
 
 }
@@ -39,12 +46,13 @@ export function setHexTextureList(textureList) {
 
 
 /**
+ * @param {DataObject} data
  * @param {number[]} mapSize
  * @param {number[]} hexArray
  */
-export function setHexMap(mapSize, hexArray) {
+export function setHexMap(data, mapSize, hexArray) {
   const reference = [0, 0];
-  const calcVectorFromCoordinate = Coordinate.createCalcVectorFromCoordinate(reference, Setting.GRID_SIZE);
+  const calcVectorFromCoordinate = Coordinate.createCalcVectorFromCoordinate(reference, data.setting.gridSize);
 
   const fragment = document.createDocumentFragment();
   let i = 0;
@@ -52,14 +60,14 @@ export function setHexMap(mapSize, hexArray) {
     for (let x = 0; x < mapSize[Y]; x += 1) {
       const hex = new HexUI(i, [x, y], hexArray[i])
         .setVector(calcVectorFromCoordinate([x, y]))
-        .setColor(hexTextureList[hexArray[i]]);
-      hexUIArray.push(hex);
+        .setColor(data.hexTextureList[hexArray[i]]);
+      data.hexUIArray.push(hex);
       fragment.append(hex.svg);
       i += 1;
     }
   }
 
-  layer.append(fragment);
+  data.layer.append(fragment);
 }
 
 
@@ -74,27 +82,7 @@ export function updateHex() {
 
 
 
-function getPoints() {
-  const p = Setting.HEX_BORDER;
-  const [x, y] = Setting.GRID_SIZE;
-  const sin30 = 1/2;
-  const cos30 = Math.sqrt(3)/2;
-
-  const [xl, xc, xr] = [p*cos30, x, x*2-p*cos30];
-  const [yt, ymt, ymb, yb] = [p, y+p*sin30, y*3-p*sin30, y*4-p];
-
-  return [
-    [xc, yt ],
-    [xr, ymt],
-    [xr, ymb],
-    [xc, yb ],
-    [xl, ymb],
-    [xl, ymt]
-  ].map(point => `${point[X]},${point[Y]}`).join(' ');
-}
-
-
-
+/** @typedef {HexUI} IHexUI */
 class HexUI {
   /**
    * @param {number} index

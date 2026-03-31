@@ -45,6 +45,7 @@ export function buildSVG(tagName) {
  * @property {(...tokens: string[]) => builder<T>} addClassList
  * @property {(qualifiedName: string, value: string) => builder<T>} setAttribute
  * @property {(property: string, value: string | null, priority?: string | undefined) => builder<T>} setProperty
+ * @property {(...nodes: (string | Node)[]) => builder<T>} append
  * @property {() => T} build
  */
 
@@ -67,6 +68,11 @@ function createBuilder(element) {
 
     setProperty: (property, value, priority) => {
       element.style.setProperty(property, value, priority);
+      return api;
+    },
+
+    append: (...nodes) => {
+      element.append(...nodes);
       return api;
     },
 

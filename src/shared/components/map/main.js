@@ -8,14 +8,25 @@ const [X, Y] = [0, 1];
 
 
 
+/**
+ * @typedef {Object} IMapSetting
+ * @property {number} scaleDeltaMul
+ * @property {number} scaleMin
+ * @property {number} scaleMax
+ * @property {number[]} gridSize
+ * @property {number} hexBorder
+ * @property {number[]} unitSize
+ * @property {number} unitBorder
+ */
+
 export class MapUI extends HTMLElement {
   #viewportData;
   #hexData;
   #unitData;
 
 
-  /** @param {Setting.IMapSetting} setting  */
-  constructor(setting=Setting.map) {
+  /** @param {IMapSetting} setting  */
+  constructor(setting=Setting.defaultMapUI) {
     super();
     const tree = createMapUITree(setting);
     this.append(tree.root);
@@ -66,18 +77,12 @@ export class MapUI extends HTMLElement {
     Viewport.performTransform(this.#viewportData);
   }
 
-
-  resize([width, height]) {
-    this.style.width  = `${width}px`;
-    this.style.height = `${height}px`;
-  }
-
 }
 customElements.define('map-viewport', MapUI);
 
 
 
-/** @param {Setting.IMapSetting} setting */
+/** @param {IMapSetting} setting */
 function createMapUITree(setting) {
   const hexPolygon = DOM.buildSVG('polygon')
     .setAttribute('id', 'hex-polygon')

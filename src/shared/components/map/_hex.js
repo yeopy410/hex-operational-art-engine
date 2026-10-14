@@ -7,7 +7,7 @@ const [X, Y] = [0, 1];
 
 export class DataObject {
   /**
-   * @param {import('./setting.js').IMapSetting} setting
+   * @param {import('./main.js').IMapSetting} setting
    * @param {SVGGElement} layer 
    */
   constructor(setting, layer) {

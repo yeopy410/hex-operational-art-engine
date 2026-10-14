@@ -26,7 +26,7 @@ const BUTTON = {
 
 export class DataObject {
   /**
-   * @param {import('./setting.js').IMapSetting} setting
+   * @param {import('./main.js').IMapSetting} setting
    * @param {HTMLElement} viewport
    */
   constructor(setting, viewport) {

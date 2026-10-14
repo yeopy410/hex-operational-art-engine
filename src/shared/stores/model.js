@@ -10,11 +10,21 @@ export function init(initData) {
   
 }
 
-
-
 /** @param {import('../types/communication.js').UpdateData} updateData */
 export function update(updateData) {
   
+}
+
+
+
+/** @param {number} index */
+export function getUnitFromIndex(index) {
+
+}
+
+/** @param {number} index */
+export function getTerrainFromIndex(index) {
+
 }
 
 

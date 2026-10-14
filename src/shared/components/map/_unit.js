@@ -8,7 +8,7 @@ const [X, Y] = [0, 1];
 
 export class DataObject {
   /**
-   * @param {import('./setting.js').IMapSetting} setting
+   * @param {import('./main.js').IMapSetting} setting
    * @param {HTMLDivElement} layer 
    */
   constructor(setting, layer) {

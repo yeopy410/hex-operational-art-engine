@@ -2,9 +2,8 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
-    "baseUrl": "./src",
     "paths": {
-      "/@shared/*": ["shared/*"],
+      "/@shared/*": ["./src/shared/*"],
     },
     "checkJs": true,
     "noImplicitReturns": false,

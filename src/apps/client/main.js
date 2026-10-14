@@ -5,6 +5,7 @@ import { MapUI } from '/@shared/components/map/main.js';
 
 // test
 import { InitDataMap } from '/@shared/types/communication.js';
+import * as Setting from '/@shared/components/map/setting.js';
 {
   const [X, Y] = [0, 1];
 
@@ -15,26 +16,20 @@ import { InitDataMap } from '/@shared/types/communication.js';
   const initDataMap = new InitDataMap(size, terrainList, hexArray);
 
 
-  const mapUI = new MapUI();
+  const mapUI = new MapUI({...Setting.defaultMapUI, unitSize: [70, 70] });
   mapUI.init(initDataMap);
   document.body.append(mapUI);
 
 
   // mapUI.addMousemoveHandler(ctx => {
   //   console.log(ctx.coordinate)
-  // })
+  // });
   mapUI.addMousedownHandler(0, ctx => {
     console.log(ctx.coordinate)
-  })
+  });
 
 
-  resize();
-  addEventListener('resize', resize);
   performFrame();
-
-  function resize() {
-    mapUI.resize([innerWidth, innerHeight]);
-  }
 
   function performFrame() {
     mapUI.performTransform();

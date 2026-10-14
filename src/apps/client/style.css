@@ -1,0 +1,16 @@
+:root {
+  --background-color: rgb(33, 33, 33);
+  --color: #FFF;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--color);
+  margin: 0;
+  user-select: none;
+}
+
+map-viewport {
+  width: 100vw;
+  height: 100vh;
+}

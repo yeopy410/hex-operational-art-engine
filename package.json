@@ -1,0 +1,33 @@
+{
+  "name": "hex-operational-art-engine",
+  "version": "1.0.0",
+  "description": "js기반 턴제 헥사 작전술 엔진.",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "electron .",
+    "build:linux": "npm run build:linux32 && npm run build:linux64",
+    "build:linux32": "electron-builder --linux --ia32",
+    "build:linux64": "electron-builder --linux --x64",
+    "build:win": "npm run build:win32 && npm run build:win64",
+    "build:win32": "electron-builder --win portable --ia32",
+    "build:win64": "electron-builder --win portable --x64"
+  },
+  "build": {
+    "productName": "hex-operational-art-engine",
+    "directories": {
+      "output": "dist"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "express": "^5.2.1",
+    "ws": "^8.19.0"
+  },
+  "devDependencies": {
+    "electron": "^40.6.1",
+    "electron-builder": "^26.8.1"
+  }
+}
